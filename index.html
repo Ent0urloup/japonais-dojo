@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>日本語 Dojo v3</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0c0c0e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="JP Dojo">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;300;400;600&family=Zen+Kaku+Gothic+New:wght@300;400;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0c0c0e;--sf:#131316;--sf2:#1a1a1e;--bd:#252530;--bd2:#353545;--tx:#e8e4dc;--mu:#5a5a6e;
+  --lc:#e8a020;--lcd:#2d1e04;--hl:#8fbbe0;--hld:#0d1e2d;--ok:#3dba6f;--ko:#e04040;--okd:#0a2018;--kod:#280a0a;
+  --jp:'Noto Serif JP',serif;--ui:'Zen Kaku Gothic New',sans-serif;--mono:'Courier Prime',monospace;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--ui);min-height:100vh;overflow-x:hidden}
+#splash{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse 80% 60% at 30% 30%,#1a1200,transparent 70%),radial-gradient(ellipse 60% 50% at 70% 70%,#060d18,transparent 70%),var(--bg);
+  padding:40px 20px;text-align:center}
+.splash-jp{font-family:var(--jp);font-size:clamp(4rem,12vw,7rem);font-weight:200;letter-spacing:.15em;
+  background:linear-gradient(135deg,#e8a020,#e8e4dc 45%,#8fbbe0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.splash-sub{font-size:.7rem;letter-spacing:.35em;text-transform:uppercase;color:var(--mu);margin-bottom:60px}
+.prow{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;width:100%;max-width:640px}
+.pcard{flex:1;min-width:240px;max-width:300px;padding:32px 24px;cursor:pointer;border:1px solid var(--bd2);
+  background:var(--sf);position:relative;overflow:hidden;transition:transform .3s,box-shadow .3s}
+.pcard::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s}
+.pcard.lc{border-top:2px solid var(--lc)}.pcard.lc::after{background:linear-gradient(160deg,#e8a02012,transparent)}
+.pcard.hl{border-top:2px solid var(--hl)}.pcard.hl::after{background:linear-gradient(160deg,#8fbbe012,transparent)}
+.pcard:hover{transform:translateY(-5px)}.pcard:hover::after{opacity:1}
+.pcard.lc:hover{box-shadow:0 16px 48px #e8a02018}.pcard.hl:hover{box-shadow:0 16px 48px #8fbbe018}
+.pkanji{font-family:var(--jp);font-size:3.5rem;font-weight:200;display:block;margin-bottom:14px}
+.lc .pkanji{color:var(--lc)}.hl .pkanji{color:var(--hl)}
+.pname{font-size:1rem;font-weight:700;letter-spacing:.1em;margin-bottom:4px}
+.plvl{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mu);margin-bottom:16px}
+.pbadge{font-size:.62rem;padding:3px 9px;letter-spacing:.1em;text-transform:uppercase;display:inline-block;margin-bottom:14px}
+.lc .pbadge{background:var(--lcd);color:var(--lc)}.hl .pbadge{background:var(--hld);color:var(--hl)}
+.pstreak{font-size:.75rem;color:var(--mu)}.pstreak b{color:var(--tx)}
+#app{display:none;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:100;background:var(--sf);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 18px;height:52px;gap:12px}
+.toplogo{font-family:var(--jp);font-size:1.15rem;font-weight:300;letter-spacing:.1em;cursor:pointer;margin-right:8px}
+.upill{font-size:.62rem;padding:3px 9px;letter-spacing:.1em;text-transform:uppercase}
+.lcp{background:var(--lcd);color:var(--lc)}.hlp{background:var(--hld);color:var(--hl)}
+.topstats{display:flex;gap:16px;align-items:center;margin-left:auto;font-size:.72rem;color:var(--mu)}
+.topstats b{font-family:var(--mono)}
+.swbtn{background:none;border:1px solid var(--bd2);color:var(--mu);font-family:var(--ui);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;cursor:pointer;margin-left:8px;transition:all .2s}
+.swbtn:hover{border-color:var(--tx);color:var(--tx)}
+.tabbar{background:var(--sf);border-bottom:1px solid var(--bd);display:flex;overflow-x:auto}
+.tabbar::-webkit-scrollbar{display:none}
+.tbtn{background:none;border:none;border-bottom:2px solid transparent;color:var(--mu);font-family:var(--ui);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;padding:13px 18px;cursor:pointer;white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:6px}
+.tbtn.lct.active{color:var(--lc);border-bottom-color:var(--lc)}.tbtn.hlt.active{color:var(--hl);border-bottom-color:var(--hl)}
+.tbtn:hover:not(.active){color:var(--tx)}
+.panel{display:none;padding:28px 18px 80px;max-width:820px;margin:0 auto;animation:fadeUp .2s ease}
+.panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.stitle{font-family:var(--jp);font-size:1.4rem;font-weight:300;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.acc{font-size:1.9rem}.acc.lc{color:var(--lc)}.acc.hl{color:var(--hl)}
+.sdesc{font-size:.7rem;color:var(--mu);letter-spacing:.05em;line-height:1.6;border-left:2px solid var(--bd2);padding-left:10px;margin:6px 0 24px}
+.card{background:var(--sf);border:1px solid var(--bd);padding:22px 26px;margin-bottom:18px}
+.clbl{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--mu);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.clbl::after{content:'';flex:1;height:1px;background:var(--bd)}
+.hgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:10px}
+.hcell{text-align:center;border:1px solid var(--bd);padding:7px 2px;cursor:pointer;transition:all .15s;background:var(--sf2);position:relative}
+.hcell:hover{border-color:var(--bd2)}.hcell.slc{background:var(--lc);border-color:var(--lc)}.hcell.empty{visibility:hidden;border:none}
+.hj{font-family:var(--jp);font-size:1.35rem;display:block}.hr{font-size:.58rem;color:var(--mu);margin-top:1px}
+.hcell.slc .hr{color:rgba(255,255,255,.6)}
+.sbdg{position:absolute;top:2px;right:2px;width:5px;height:5px;border-radius:50%}
+.hfocus{text-align:center;padding:18px;background:var(--sf2);border:1px solid var(--bd);margin:10px 0;display:none}
+.hfbig{font-family:var(--jp);font-size:5rem;font-weight:200;line-height:1}
+.hfro{font-size:.9rem;letter-spacing:.3em;text-transform:uppercase;color:var(--mu);margin-top:6px}
+.mnem{margin-top:12px;padding:10px 14px;background:#0d0d18;border-left:2px solid #3a4080;font-size:.78rem;color:var(--mu);line-height:1.6;display:none}
+.mnem.show{display:block}.mnem b{color:var(--tx)}
+.mcard{background:#0d0d18;border:1px solid #2a2a50;padding:14px 16px;margin:10px 0;font-size:.8rem;line-height:1.8;color:var(--mu);display:none}
+.mcard.show{display:block}.mcard b{color:var(--tx)}.mcard .key{color:var(--lc);font-weight:700}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.choice{background:var(--sf2);border:1px solid var(--bd);padding:11px 14px;cursor:pointer;font-family:var(--ui);font-size:.83rem;color:var(--tx);text-align:left;display:flex;align-items:center;gap:9px;transition:all .15s}
+.choice:hover{border-color:var(--bd2);background:#1e1e24}
+.choice.correct{background:var(--okd);border-color:var(--ok);color:var(--ok)}
+.choice.wrong{background:var(--kod);border-color:var(--ko);color:var(--ko)}
+.cltr{font-size:.58rem;background:var(--bd);width:17px;height:17px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono)}
+.fb{display:none;margin-top:11px;padding:10px 13px;font-size:.78rem;line-height:1.6}
+.fb.show{display:block}
+.fb.ok{background:var(--okd);border-left:2px solid var(--ok);color:#7fe8a8}
+.fb.ko{background:var(--kod);border-left:2px solid var(--ko);color:#f08080}
+.fb.info{background:#0d0d18;border-left:2px solid #3a4080;color:#9090c0}
+.inrow{display:flex;gap:7px;margin-top:9px}
+.jinp{flex:1;background:var(--sf2);border:none;border-bottom:2px solid var(--bd2);color:var(--tx);font-family:var(--jp);font-size:1rem;padding:9px 12px;outline:none;transition:border-color .2s}
+.jinp.lf:focus{border-bottom-color:var(--lc)}.jinp.hf:focus{border-bottom-color:var(--hl)}
+.jinp.correct{border-bottom-color:var(--ok);background:var(--okd)}.jinp.wrong{border-bottom-color:var(--ko);background:var(--kod)}
+.btn{background:var(--tx);color:var(--bg);border:none;padding:9px 18px;font-family:var(--ui);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:opacity .2s;font-weight:700}
+.btn:hover{opacity:.85}.btn:disabled{opacity:.3;cursor:default}
+.btn.ghost{background:none;border:1px solid var(--bd2);color:var(--mu);font-weight:400}
+.btn.ghost:hover{border-color:var(--tx);color:var(--tx);opacity:1}
+.btn.lc{background:var(--lc);color:#000}.btn.hl{background:var(--hl);color:#000}
+.pbar-w{height:3px;background:var(--bd);border-radius:2px;margin-bottom:20px}
+.pbar{height:3px;border-radius:2px;transition:width .4s}
+.pbar.lc{background:var(--lc)}.pbar.hl{background:var(--hl)}
+.sstrip{display:flex;align-items:center;gap:18px;padding:11px 16px;background:var(--sf2);border:1px solid var(--bd);margin-bottom:18px}
+.sbig{font-family:var(--mono);font-size:1.4rem;font-weight:700}
+.slbl{font-size:.62rem;color:var(--mu);letter-spacing:.1em;text-transform:uppercase}
+.vt{width:100%;border-collapse:collapse;font-size:.8rem}
+.vt th{background:var(--sf2);padding:7px 12px;text-align:left;font-weight:400;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--mu);border-bottom:1px solid var(--bd)}
+.vt td{padding:9px 12px;border-bottom:1px solid var(--bd);vertical-align:middle}
+.vt td.jp{font-family:var(--jp);font-size:1.05rem}.vt td.ro{color:var(--mu);font-family:var(--mono);font-size:.78rem}
+.vt tr:hover td{background:var(--sf2)}
+.kshow{display:flex;align-items:center;gap:20px;padding:16px;background:var(--sf2);border:1px solid var(--bd);margin-bottom:10px}
+.kbig{font-family:var(--jp);font-size:3.8rem;font-weight:200;line-height:1;flex-shrink:0;color:var(--hl)}
+.kinfo{flex:1}.kmean{font-size:.95rem;font-weight:700;margin-bottom:4px}
+.kon{font-size:.75rem;color:var(--mu);margin-bottom:4px}.kon span{font-family:var(--jp);color:var(--tx);margin-right:6px}
+.kex{font-size:.75rem;color:var(--mu);font-family:var(--mono)}.kex b{font-family:var(--jp);color:var(--tx);font-size:.95rem;margin-right:5px}
+.gbox{background:var(--sf2);border:1px solid var(--bd);border-left:2px solid var(--hl);padding:14px 16px;margin-bottom:12px}
+.gtitle{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--hl);margin-bottom:6px}
+.gpat{font-family:var(--mono);font-size:.95rem;margin-bottom:7px}
+.gex{font-size:.78rem;color:var(--mu);line-height:1.9}.gex span{font-family:var(--jp);color:var(--tx);font-size:.95rem;display:block}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
+.mcol{display:flex;flex-direction:column;gap:6px}
+.mitem{border:1px solid var(--bd);padding:9px 13px;cursor:pointer;font-size:.82rem;transition:all .15s;background:var(--sf2);user-select:none}
+.mitem.jpitem{font-family:var(--jp);font-size:1.15rem;text-align:center}
+.mitem:hover{border-color:var(--bd2)}.mitem.sel{border-color:var(--tx);background:#1e1e28}
+.mitem.mok{border-color:var(--ok);background:var(--okd);color:var(--ok);pointer-events:none}
+.mitem.mnok{border-color:var(--ko);background:var(--kod)}
+.srs-info{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.srss{background:var(--sf2);border:1px solid var(--bd);padding:14px;text-align:center}
+.srss .n{font-family:var(--mono);font-size:1.5rem;font-weight:700}
+.srss .l{font-size:.62rem;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-top:4px}
+.srss.new .n{color:var(--lc)}.srss.due .n{color:#e87020}.srss.ok .n{color:var(--ok)}
+.sgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px}
+.sday{aspect-ratio:1;border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:.58rem;color:var(--mu);flex-direction:column;gap:1px}
+.sday.done.lc{background:var(--lcd);border-color:var(--lc);color:var(--lc)}
+.sday.done.hl{background:var(--hld);border-color:var(--hl);color:var(--hl)}
+.sday.today{border-style:dashed;border-color:var(--bd2)}
+.wbig{font-family:var(--jp);font-size:2.8rem;text-align:center;margin:14px 0;font-weight:200}
+.nrow{text-align:right;margin-top:12px}
+.tip{font-size:.72rem;color:var(--mu);border:1px dashed var(--bd2);padding:9px 13px;margin-bottom:14px;line-height:1.6}
+.tip b{color:var(--tx)}
+.rbox{text-align:center;padding:28px;background:var(--sf2);border:1px solid var(--bd)}
+.rpct{font-family:var(--mono);font-size:2.8rem;font-weight:700;margin-bottom:6px}
+.rmsg{color:var(--mu);font-size:.82rem;margin-bottom:18px}
+.pill{display:inline-block;font-size:.58rem;padding:2px 7px;letter-spacing:.1em;text-transform:uppercase;margin-right:4px}
+
+.speak-btn{background:none;border:1px solid var(--bd2);color:var(--mu);font-size:.8rem;padding:4px 10px;cursor:pointer;transition:all .2s;margin-left:8px;vertical-align:middle}
+.speak-btn:hover{border-color:var(--tx);color:var(--tx)}
+.pill.n5{background:#1a2d1a;color:#5fa85f}.pill.n4{background:#1a1a2d;color:#5f5fa8}
+</style>
+</head>
+<body>
+<div id="splash">
+  <div class="splash-jp">日本語</div>
+  <div class="splash-sub">Dojo — choisissez votre profil</div>
+  <div class="prow">
+    <div class="pcard lc" onclick="startApp('loic')">
+      <span class="pkanji">始</span>
+      <div class="pname">Loïc</div><div class="plvl">Débutant</div>
+      <div class="pbadge">🌱 Semaine 1</div><br>
+      <div class="pstreak">🔥 <b id="lks">0</b> j &nbsp;·&nbsp; ⭐ <b id="lxs">0</b> XP</div>
+    </div>
+    <div class="pcard hl" onclick="startApp('helena')">
+      <span class="pkanji">進</span>
+      <div class="pname">Helena</div><div class="plvl">Intermédiaire</div>
+      <div class="pbadge">⚡ Niveau N4</div><br>
+      <div class="pstreak">🔥 <b id="hks">0</b> j &nbsp;·&nbsp; ⭐ <b id="hxs">0</b> XP</div>
+    </div>
+  </div>
+</div>
+<div id="app">
+  <div class="topbar">
+    <span class="toplogo" onclick="goSplash()">日本語</span>
+    <span class="upill" id="tpill"></span>
+    <div class="topstats">🔥 <b id="tsk">0</b> &nbsp;·&nbsp; ⭐ <b id="txp">0</b> XP</div>
+    <button class="swbtn" onclick="goSplash()">← Changer</button>
+  </div>
+  <div class="tabbar" id="tabbar"></div>
+  <div id="lp">
+    <!-- SRS Loic -->
+    <div class="panel" id="l-srs">
+      <div class="stitle"><span class="acc lc">復</span> Répétition Espacée</div>
+      <div class="sdesc">Algorithme SRS (SM-2) : chaque hiragana est planifié selon tes performances. Bonne réponse = intervalle x2. Erreur = retour à J+1.</div>
+      <div class="srs-info">
+        <div class="srss new"><div class="n" id="sn">0</div><div class="l">Nouveaux</div></div>
+        <div class="srss due"><div class="n" id="sd">0</div><div class="l">À réviser</div></div>
+        <div class="srss ok"><div class="n" id="so">0</div><div class="l">Maîtrisés</div></div>
+      </div>
+      <div class="card" id="sc">
+        <div class="clbl">Carte SRS — Hiragana</div>
+        <div class="wbig" id="schar">？</div>
+        <div style="text-align:center;margin-top:-8px"><button class="speak-btn" onclick="speak(document.getElementById('schar').textContent)">🔊 Écouter</button></div>
+        <div class="mcard" id="smnem"><div id="smtext"></div></div>
+        <div style="margin-top:14px"><div style="font-size:.7rem;color:var(--mu);margin-bottom:8px;letter-spacing:.1em">QUELLE EST LA LECTURE ?</div>
+        <div class="choices" id="schoices"></div></div>
+        <div class="fb" id="sfb"></div>
+        <div class="nrow"><button class="btn lc" id="snx" onclick="nextSRS()" disabled>Suivant →</button></div>
+      </div>
+      <div id="sdone" style="display:none" class="card">
+        <div class="rbox"><div class="rpct lc" style="color:var(--lc)" id="spct">—</div><div class="rmsg" id="smsg"></div><button class="btn lc" onclick="startSRS()">Nouvelle session</button></div>
+      </div>
+    </div>
+    <!-- Hiragana + mnemoniques -->
+    <div class="panel" id="l-hira">
+      <div class="stitle"><span class="acc lc">あ</span> Hiragana + Mnémotechniques</div>
+      <div class="sdesc">Clique sur un caractère pour voir l'image mentale qui t'aide à mémoriser sa forme ET son son.</div>
+      <div class="card">
+        <div class="clbl">Table — point coloré = niveau SRS</div>
+        <div class="hgrid" id="hgrid"></div>
+        <div class="hfocus" id="hfoc">
+          <div class="hfbig" id="hfb"></div><div class="hfro" id="hfr"></div>
+          <div style="margin-top:10px"><button class="speak-btn" onclick="speak(document.getElementById('hfb').textContent)">🔊 Écouter</button></div>
+        </div>
+        <div class="mnem" id="hfm"></div>
+      </div>
+      <div class="card">
+        <div class="clbl">Quiz avec mnémotechnique affiché</div>
+        <div id="hqz"></div>
+      </div>
+    </div>
+    <!-- Vocab -->
+    <div class="panel" id="l-vocab">
+      <div class="stitle"><span class="acc lc">語</span> Vocabulaire + Lecture</div>
+      <div class="sdesc">Salutations, chiffres, famille. Puis entraîne-toi à déchiffrer des mots réels en hiragana.</div>
+      <div class="card">
+        <div class="clbl">Salutations <span class="pill n5">N5</span></div>
+        <table class="vt"><tr><th>Japonais</th><th>Romanisation</th><th>Français</th></tr>
+        <tr><td class="jp">おはようございます</td><td class="ro">ohayou gozaimasu</td><td>Bonjour (matin)</td></tr>
+        <tr><td class="jp">こんにちは</td><td class="ro">konnichiwa</td><td>Bonjour</td></tr>
+        <tr><td class="jp">こんばんは</td><td class="ro">konbanwa</td><td>Bonsoir</td></tr>
+        <tr><td class="jp">ありがとうございます</td><td class="ro">arigatou gozaimasu</td><td>Merci beaucoup</td></tr>
+        <tr><td class="jp">すみません</td><td class="ro">sumimasen</td><td>Excusez-moi</td></tr>
+        <tr><td class="jp">はじめまして</td><td class="ro">hajimemashite</td><td>Enchanté(e)</td></tr>
+        <tr><td class="jp">よろしくおねがいします</td><td class="ro">yoroshiku onegaishimasu</td><td>Ravi de vous connaître</td></tr></table>
+      </div>
+      <div class="card">
+        <div class="clbl">Lecture de mots réels — déchiffre le hiragana !</div>
+        <div class="tip"><b>Étape clé :</b> lire de vrais mots en hiragana, pas juste des caractères isolés. C'est comme ça qu'on apprend vraiment.</div>
+        <div id="wrc"></div>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <button class="btn lc" onclick="checkWR()">Vérifier ✓</button>
+          <button class="btn ghost" onclick="buildWR()">Nouveaux mots</button>
+        </div>
+        <div class="fb" id="wrfb" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <!-- Phrases Loic -->
+    <div class="panel" id="l-phrases">
+      <div class="stitle"><span class="acc lc">文</span> Phrases</div>
+      <div class="sdesc">Complète en romanisation. Structure SOV : Sujet は Objet を Verbe.</div>
+      <div class="tip"><b>Règle d'or :</b> en japonais, le verbe est TOUJOURS en dernier. <b>です</b> (desu) = suis/est/êtes.</div>
+      <div id="lphr"></div>
+      <div style="display:flex;gap:8px"><button class="btn lc" onclick="checkLP()">Vérifier ✓</button><button class="btn ghost" onclick="buildLP()">Réinitialiser</button></div>
+      <div class="fb" id="lpfb" style="margin-top:12px"></div>
+    </div>
+    <!-- Prog Loic -->
+    <div class="panel" id="l-prog">
+      <div class="stitle"><span class="acc lc">進</span> Progression</div>
+      <div class="sdesc">Ton avancement réel — maîtrise SRS par caractère.</div>
+      <div class="card"><div class="clbl">Série — 28 jours</div><div class="sgrid" id="lsg"></div>
+        <div style="font-size:.78rem;color:var(--mu)">🔥 <b style="color:var(--lc)" id="lsn">0</b> j &nbsp;·&nbsp; ⭐ <b style="color:var(--lc)" id="lxn">0</b> XP &nbsp;·&nbsp; Niv. <b style="color:var(--lc)" id="lln">1</b></div>
+      </div>
+      <div class="card"><div class="clbl">Maîtrise hiragana — 🟡 Nouveau &nbsp; 🟠 Apprentissage &nbsp; 🟢 Maîtrisé</div>
+        <div id="hmg" style="display:grid;grid-template-columns:repeat(5,1fr);gap:3px"></div>
+      </div>
+      <div class="card" style="border-top:2px solid var(--lc)"><div class="clbl">Programme semaine 1</div>
+        <table class="vt"><tr><th>Jour</th><th>Focus</th><th>Durée</th></tr>
+        <tr><td>Lun/Mer/Ven</td><td>SRS + 2 lignes hiragana</td><td>15 min</td></tr>
+        <tr><td>Mar/Jeu</td><td>Vocabulaire + Lecture de mots</td><td>15 min</td></tr>
+        <tr><td>Samedi</td><td>Phrases complètes</td><td>20 min</td></tr>
+        <tr><td>Dimanche</td><td>Révision SRS</td><td>10 min</td></tr></table>
+      </div>
+    </div>
+  </div>
+  <div id="hp" style="display:none">
+    <!-- SRS Helena -->
+    <div class="panel" id="h-srs">
+      <div class="stitle"><span class="acc hl">復</span> SRS — Katakana</div>
+      <div class="sdesc">Répétition espacée sur les katakana avec mnémotechniques. Même algorithme SM-2.</div>
+      <div class="srs-info">
+        <div class="srss new"><div class="n" id="hsn">0</div><div class="l">Nouveaux</div></div>
+        <div class="srss due"><div class="n" id="hsd">0</div><div class="l">À réviser</div></div>
+        <div class="srss ok"><div class="n" id="hso">0</div><div class="l">Maîtrisés</div></div>
+      </div>
+      <div class="card" id="hsc">
+        <div class="clbl">Carte SRS — Katakana</div>
+        <div class="wbig" style="color:var(--hl)" id="hschar">？</div>
+        <div style="text-align:center;margin-top:-8px"><button class="speak-btn" onclick="speak(document.getElementById('hschar').textContent)">🔊 Écouter</button></div>
+        <div class="mcard" id="hsmnem"><div id="hsmtext"></div></div>
+        <div style="margin-top:14px"><div style="font-size:.7rem;color:var(--mu);margin-bottom:8px;letter-spacing:.1em">QUELLE EST LA LECTURE ?</div>
+        <div class="choices" id="hschoices"></div></div>
+        <div class="fb" id="hsfb"></div>
+        <div class="nrow"><button class="btn hl" id="hsnx" onclick="nextHSRS()" disabled>Suivant →</button></div>
+      </div>
+      <div id="hsdone" style="display:none" class="card">
+        <div class="rbox"><div class="rpct" style="color:var(--hl)" id="hspct">—</div><div class="rmsg" id="hsmsg"></div><button class="btn hl" onclick="startHSRS()">Nouvelle session</button></div>
+      </div>
+    </div>
+    <!-- Kanji -->
+    <div class="panel" id="h-kanji">
+      <div class="stitle"><span class="acc hl">漢</span> Kanji N5</div>
+      <div class="sdesc">15 kanji essentiels avec lectures et exemples. Quiz après la table.</div>
+      <div id="klist"></div>
+      <div class="card"><div class="clbl">Quiz Kanji → Signification</div><div id="kqz"></div></div>
+    </div>
+    <!-- Grammaire -->
+    <div class="panel" id="h-grammar">
+      <div class="stitle"><span class="acc hl">文法</span> Grammaire</div>
+      <div class="sdesc">7 structures N5–N4 fondamentales + exercices de complétion.</div>
+      <div class="card"><div class="clbl">Structures essentielles</div>
+        <div class="gbox"><div class="gtitle">① X は Y です — Affirmation</div><div class="gpat">[Sujet] は [Attribut] です</div><div class="gex"><span>わたし は がくせい です。</span>Je suis étudiant(e).<span>これ は ほん です。</span>C'est un livre.</div></div>
+        <div class="gbox"><div class="gtitle">② X は Y じゃないです — Négation</div><div class="gpat">[Sujet] は [Attribut] じゃないです</div><div class="gex"><span>これ は ほん じゃないです。</span>Ce n'est pas un livre.</div></div>
+        <div class="gbox"><div class="gtitle">③ Verbe + ます — Présent poli</div><div class="gpat">[Sujet] は [Objet] を [Verbe]ます</div><div class="gex"><span>わたし は りんご を たべます。</span>Je mange une pomme.</div></div>
+        <div class="gbox"><div class="gtitle">④ Verbe + ません — Négatif poli</div><div class="gpat">[Verbe]ません</div><div class="gex"><span>わたし は にく を たべません。</span>Je ne mange pas de viande.</div></div>
+        <div class="gbox"><div class="gtitle">⑤ Question — か</div><div class="gpat">[Phrase] + か？</div><div class="gex"><span>これ は なん ですか？</span>Qu'est-ce que c'est ?</div></div>
+        <div class="gbox"><div class="gtitle">⑥ います / あります — Il y a</div><div class="gpat">[Lieu] に [Chose] が あります / います</div><div class="gex"><span>へや に ねこ が います。</span>Il y a un chat dans la chambre.</div></div>
+        <div class="gbox"><div class="gtitle">⑦ Passé poli — ました / ませんでした</div><div class="gpat">[Verbe]ました / ませんでした</div><div class="gex"><span>きのう えいが を みました。</span>Hier j'ai regardé un film.</div></div>
+      </div>
+      <div class="card"><div class="clbl">Exercice — Complète la phrase</div>
+        <div id="hphr"></div>
+        <div style="display:flex;gap:8px;margin-top:6px"><button class="btn hl" onclick="checkHP()">Vérifier ✓</button><button class="btn ghost" onclick="buildHP()">Réinitialiser</button></div>
+        <div class="fb" id="hpfb" style="margin-top:12px"></div>
+      </div>
+    </div>
+    <!-- Match -->
+    <div class="panel" id="h-match">
+      <div class="stitle"><span class="acc hl">合</span> Association Kanji</div>
+      <div class="sdesc">Relie chaque kanji à sa lecture. Clique gauche puis droite.</div>
+      <div class="card"><div class="clbl">Kanji → Lecture / Sens</div>
+        <div class="mgrid"><div class="mcol" id="wml"></div><div class="mcol" id="wmr"></div></div>
+        <div class="fb" id="wmfb"></div>
+        <div class="nrow" style="margin-top:10px"><button class="btn ghost" onclick="initWM()">Mélanger ↺</button></div>
+      </div>
+    </div>
+    <!-- Prog Helena -->
+    <div class="panel" id="h-prog">
+      <div class="stitle"><span class="acc hl">進</span> Progression</div>
+      <div class="sdesc">Avancement, streak et objectifs.</div>
+      <div class="card"><div class="clbl">Série — 28 jours</div><div class="sgrid" id="hsg"></div>
+        <div style="font-size:.78rem;color:var(--mu)">🔥 <b style="color:var(--hl)" id="hsn2">0</b> j &nbsp;·&nbsp; ⭐ <b style="color:var(--hl)" id="hxn">0</b> XP &nbsp;·&nbsp; Niv. <b style="color:var(--hl)" id="hln">1</b></div>
+      </div>
+      <div class="card" style="border-top:2px solid var(--hl)"><div class="clbl">Programme intermédiaire</div>
+        <table class="vt"><tr><th>Priorité</th><th>Objectif quotidien</th></tr>
+        <tr><td>SRS Katakana</td><td>Session complète (10 cartes)</td></tr>
+        <tr><td>Kanji</td><td>5 nouveaux + révision</td></tr>
+        <tr><td>Grammaire</td><td>1 structure, 3 phrases d'application</td></tr>
+        <tr><td>Lecture</td><td>1 texte court en hiragana/katakana</td></tr></table>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+// DATA
+const H=[
+  {jp:'あ',ro:'a'},{jp:'い',ro:'i'},{jp:'う',ro:'u'},{jp:'え',ro:'e'},{jp:'お',ro:'o'},
+  {jp:'か',ro:'ka'},{jp:'き',ro:'ki'},{jp:'く',ro:'ku'},{jp:'け',ro:'ke'},{jp:'こ',ro:'ko'},
+  {jp:'さ',ro:'sa'},{jp:'し',ro:'shi'},{jp:'す',ro:'su'},{jp:'せ',ro:'se'},{jp:'そ',ro:'so'},
+  {jp:'た',ro:'ta'},{jp:'ち',ro:'chi'},{jp:'つ',ro:'tsu'},{jp:'て',ro:'te'},{jp:'と',ro:'to'},
+  {jp:'な',ro:'na'},{jp:'に',ro:'ni'},{jp:'ぬ',ro:'nu'},{jp:'ね',ro:'ne'},{jp:'の',ro:'no'},
+  {jp:'は',ro:'ha'},{jp:'ひ',ro:'hi'},{jp:'ふ',ro:'fu'},{jp:'へ',ro:'he'},{jp:'ほ',ro:'ho'},
+  {jp:'ま',ro:'ma'},{jp:'み',ro:'mi'},{jp:'む',ro:'mu'},{jp:'め',ro:'me'},{jp:'も',ro:'mo'},
+  {jp:'や',ro:'ya'},{jp:'',ro:''},{jp:'ゆ',ro:'yu'},{jp:'',ro:''},{jp:'よ',ro:'yo'},
+  {jp:'ら',ro:'ra'},{jp:'り',ro:'ri'},{jp:'る',ro:'ru'},{jp:'れ',ro:'re'},{jp:'ろ',ro:'ro'},
+  {jp:'わ',ro:'wa'},{jp:'',ro:''},{jp:'',ro:''},{jp:'',ro:''},{jp:'を',ro:'wo'},
+  {jp:'ん',ro:'n'},{jp:'',ro:''},{jp:'',ro:''},{jp:'',ro:''},{jp:'',ro:''},
+];
+const K=[
+  {jp:'ア',ro:'a'},{jp:'イ',ro:'i'},{jp:'ウ',ro:'u'},{jp:'エ',ro:'e'},{jp:'オ',ro:'o'},
+  {jp:'カ',ro:'ka'},{jp:'キ',ro:'ki'},{jp:'ク',ro:'ku'},{jp:'ケ',ro:'ke'},{jp:'コ',ro:'ko'},
+  {jp:'サ',ro:'sa'},{jp:'シ',ro:'shi'},{jp:'ス',ro:'su'},{jp:'セ',ro:'se'},{jp:'ソ',ro:'so'},
+  {jp:'タ',ro:'ta'},{jp:'チ',ro:'chi'},{jp:'ツ',ro:'tsu'},{jp:'テ',ro:'te'},{jp:'ト',ro:'to'},
+  {jp:'ナ',ro:'na'},{jp:'ニ',ro:'ni'},{jp:'ヌ',ro:'nu'},{jp:'ネ',ro:'ne'},{jp:'ノ',ro:'no'},
+  {jp:'ハ',ro:'ha'},{jp:'ヒ',ro:'hi'},{jp:'フ',ro:'fu'},{jp:'ヘ',ro:'he'},{jp:'ホ',ro:'ho'},
+  {jp:'マ',ro:'ma'},{jp:'ミ',ro:'mi'},{jp:'ム',ro:'mu'},{jp:'メ',ro:'me'},{jp:'モ',ro:'mo'},
+  {jp:'ヤ',ro:'ya'},{jp:'',ro:''},{jp:'ユ',ro:'yu'},{jp:'',ro:''},{jp:'ヨ',ro:'yo'},
+  {jp:'ラ',ro:'ra'},{jp:'リ',ro:'ri'},{jp:'ル',ro:'ru'},{jp:'レ',ro:'re'},{jp:'ロ',ro:'ro'},
+  {jp:'ワ',ro:'wa'},{jp:'',ro:''},{jp:'',ro:''},{jp:'',ro:''},{jp:'ヲ',ro:'wo'},
+  {jp:'ン',ro:'n'},{jp:'',ro:''},{jp:'',ro:''},{jp:'',ro:''},
+];
+const MNEM={
+  'あ':`<b class="key">あ (a)</b> — Imagine un <b>A</b> majuscule auquel on a ajouté un bras horizontal. Quelqu'un qui crie "AH !" en ouvrant les bras en croix.`,
+  'い':`<b class="key">い (i)</b> — Deux petits traits verticaux = deux <b>i</b> minuscules côte à côte. "i-i" = deux i.`,
+  'う':`<b class="key">う (u)</b> — Un <b>U</b> avec un chapeau. La forme ressemble à une tasse vue de profil.`,
+  'え':`<b class="key">え (e)</b> — Un balancier asymétrique. Comme quelqu'un qui dit "Eh !" en levant un bras.`,
+  'お':`<b class="key">お (o)</b> — Un personnage avec un chapeau rond qui dit "Oh !". La courbe du bas = la bouche en O.`,
+  'か':`<b class="key">か (ka)</b> — Un <b>ka</b>raté fighter en position. Le trait oblique = le bras qui frappe vers le bas.`,
+  'き':`<b class="key">き (ki)</b> — Une <b>clé</b> (key en anglais). Les traits horizontaux = les dents de la clé.`,
+  'く':`<b class="key">く (ku)</b> — Le bec d'un <b>cou</b>cou. Un chevron ouvert vers la droite — la bouche qui dit "cou-cou".`,
+  'け':`<b class="key">け (ke)</b> — Un <b>K</b> avec une jambe supplémentaire. Pense à "KE-K" pour le mémoriser.`,
+  'こ':`<b class="key">こ (ko)</b> — Deux traits horizontaux parallèles = deux <b>co</b>rdes. Comme un signe = stylisé.`,
+  'さ':`<b class="key">さ (sa)</b> — Un <b>S</b>amurai qui tient son épée vers le bas, prêt à frapper.`,
+  'し':`<b class="key">し (shi)</b> — Un hameçon. Quand on dit "Chhhh", le doigt sur la bouche trace exactement cette courbe.`,
+  'す':`<b class="key">す (su)</b> — Une toupie avec un fil — comme la <b>su</b>spension d'un mobile qui tourne.`,
+  'せ':`<b class="key">せ (se)</b> — Un plan vu de dessus avec une croix — comme un <b>se</b>cteur sur une carte.`,
+  'そ':`<b class="key">そ (so)</b> — Deux vagues superposées, comme le <b>so</b>n de l'océan.`,
+  'た':`<b class="key">た (ta)</b> — Une croix avec une jambe — comme un panneau sur un <b>ta</b>bleau d'affichage.`,
+  'ち':`<b class="key">ち (chi)</b> — Un oiseau qui dit "<b>chi</b>-chi". La courbe = le corps, le trait = la queue qui pointe.`,
+  'つ':`<b class="key">つ (tsu)</b> — Une vague de <b>tsu</b>nami vue de profil. La grande courbe déferle vers la droite.`,
+  'て':`<b class="key">て (te)</b> — Une <b>main</b> (<b>te</b> = main en japonais !). Le trait = la paume, la courbe = le doigt.`,
+  'と':`<b class="key">と (to)</b> — Une <b>to</b>rnade. Le trait vertical + la petite boucle = un tourbillon qui aspire.`,
+  'な':`<b class="key">な (na)</b> — Une boucle complexe qui ressemble au chiffre 4 stylisé avec une queue.`,
+  'に':`<b class="key">に (ni)</b> — Deux traits horizontaux + une barre = le chiffre <b>2</b> en japonais (に = ni = 2 !).`,
+  'ぬ':`<b class="key">ぬ (nu)</b> — Des <b>noo</b>dles (nouilles) entortillées. La boucle centrale = le nœud des spaghettis.`,
+  'ね':`<b class="key">ね (ne)</b> — Un chat qui dort (<b>neko</b> = chat). La boucle = la queue enroulée, le trait = le corps.`,
+  'の':`<b class="key">の (no)</b> — Une spirale simple. Comme tourner le doigt pour dire "<b>no</b>n, non, non".`,
+  'は':`<b class="key">は (ha)</b> — Ressemble à un H modifié avec une jambe. Comme rire "<b>ha</b> ha ha !" en ouvrant la bouche.`,
+  'ひ':`<b class="key">ひ (hi)</b> — Un sourire avec un petit nez. Comme le sourire qu'on fait en disant "<b>Hi</b> !"`,
+  'ふ':`<b class="key">ふ (fu)</b> — Un petit fumeur de pipe vu de profil. La courbe = la fumée qui <b>fu</b>it vers le haut.`,
+  'へ':`<b class="key">へ (he)</b> — Un simple accent circonflexe. Comme le toit d'une maison vue de face.`,
+  'ほ':`<b class="key">ほ (ho)</b> — Comme "は" avec une boucle en plus. <b>Ho</b>-ho-ho ! Le Père Noël avec son gros sac.`,
+  'ま':`<b class="key">ま (ma)</b> — Une croix avec une boucle en bas. Comme une <b>ma</b>man qui fait un grand câlin.`,
+  'み':`<b class="key">み (mi)</b> — Deux boucles entrelacées = les oreilles de Mickey. "<b>Mi</b>ckey" pour s'en souvenir.`,
+  'む':`<b class="key">む (mu)</b> — Une vache qui dit "<b>mu</b>u". La spirale = la corne tordue de la vache.`,
+  'め':`<b class="key">め (me)</b> — Un œil (<b>me</b> = œil en japonais !). La boucle = la pupille, le trait = le cil.`,
+  'も':`<b class="key">も (mo)</b> — Un ver (<b>mo</b>t "morme") avec deux antennes horizontales qui rampent.`,
+  'や':`<b class="key">や (ya)</b> — Un <b>ya</b>k assis. La forme arrondie = le corps massif de l'animal.`,
+  'ゆ':`<b class="key">ゆ (yu)</b> — Un U avec un trait à gauche. Comme un <b>u</b>nicorne de profil avec sa corne.`,
+  'よ':`<b class="key">よ (yo)</b> — Un yoyo. Le trait vertical + la boucle = le yo-yo en plein mouvement.`,
+  'ら':`<b class="key">ら (ra)</b> — Un <b>ra</b>bbit assis. La boucle = la tête ronde, le trait en bas = les longues oreilles.`,
+  'り':`<b class="key">り (ri)</b> — Deux traits presque parallèles = deux rails de chemin de fer. <b>Ri</b>-rail.`,
+  'る':`<b class="key">る (ru)</b> — Une spirale avec une queue = un <b>ru</b>isseau qui tourbillonne avant de tomber.`,
+  'れ':`<b class="key">れ (re)</b> — Comme "ら" mais avec une queue courbée en plus. Une clé <b>re</b>tournée.`,
+  'ろ':`<b class="key">ろ (ro)</b> — Une boucle ouverte = un <b>ro</b>cher poli par le courant.`,
+  'わ':`<b class="key">わ (wa)</b> — Un U asymétrique avec un trait. Comme un <b>wa</b>gon vu de face.`,
+  'を':`<b class="key">を (wo)</b> — Particule d'objet direct — la forme complexe reflète son importance grammaticale !`,
+  'ん':`<b class="key">ん (n)</b> — La seule consonne seule. Ressemble à un "n" incliné — très simple à retenir.`,
+};
+const KMNEM={
+  'ア':`<b class="key">ア (a)</b> — Un <b>A</b> majuscule simplifié. Deux traits obliques réunis en haut.`,
+  'イ':`<b class="key">イ (i)</b> — Deux traits = deux jambes qui marchent. Quelqu'un qui avance = "i" en mouvement.`,
+  'ウ':`<b class="key">ウ (u)</b> — Un <b>U</b> avec un trait horizontal au-dessus. Comme un bol renversé.`,
+  'エ':`<b class="key">エ (e)</b> — La lettre H à moitié = une <b>e</b>scalade vue de profil.`,
+  'オ':`<b class="key">オ (o)</b> — Une croix + un arc = un <b>o</b>iseau qui atterrit les ailes déployées.`,
+  'カ':`<b class="key">カ (ka)</b> — Un <b>K</b> avec un seul bras. Coup de <b>ka</b>raté !`,
+  'キ':`<b class="key">キ (ki)</b> — Un <b>ki</b>mono vu de face — les lignes horizontales = les bandes du tissu.`,
+  'ク':`<b class="key">ク (ku)</b> — Le bec d'un <b>cou</b>cou. Deux traits = bec grand ouvert.`,
+  'ケ':`<b class="key">ケ (ke)</b> — Un <b>K</b> simplifié. Comme la lettre K vue de loin.`,
+  'コ':`<b class="key">コ (ko)</b> — Un angle droit = le <b>co</b>in d'une pièce. Deux côtés d'un carré.`,
+  'サ':`<b class="key">サ (sa)</b> — Un <b>sa</b>murai avec son casque vu de côté.`,
+  'シ':`<b class="key">シ (shi)</b> — Trois petits points + une courbe = un visage souriant vu de côté.`,
+  'ス':`<b class="key">ス (su)</b> — Une <b>su</b>perpersonne en rappel. La courbe = la corde de descente.`,
+  'セ':`<b class="key">セ (se)</b> — Un 7 avec un trait horizontal au milieu.`,
+  'ソ':`<b class="key">ソ (so)</b> — Comme シ mais retourné. Deux traits + courbe = visage de l'autre côté.`,
+  'タ':`<b class="key">タ (ta)</b> — Une croix avec une boucle = ta propre signature stylisée.`,
+  'チ':`<b class="key">チ (chi)</b> — La lettre grecque χ (chi) ! Deux traits croisés avec une courbe.`,
+  'ツ':`<b class="key">ツ (tsu)</b> — Trois traits + grande courbe = vague de <b>tsu</b>nami vue de dessus.`,
+  'テ':`<b class="key">テ (te)</b> — Une croix avec un trait penché = une antenne <b>te</b>lévision.`,
+  'ト':`<b class="key">ト (to)</b> — Un bâton avec un crochet = une <b>to</b>rche plantée dans le sol.`,
+  'ナ':`<b class="key">ナ (na)</b> — Une simple croix = signe <b>na</b>vigateur sur une carte.`,
+  'ニ':`<b class="key">ニ (ni)</b> — Deux traits horizontaux = le chiffre <b>2</b> (ni = 2 !).`,
+  'ヌ':`<b class="key">ヌ (nu)</b> — Un X avec une queue = des <b>nu</b>dles croisées qui pendent.`,
+  'ネ':`<b class="key">ネ (ne)</b> — Une croix avec une queue sinueuse.`,
+  'ノ':`<b class="key">ノ (no)</b> — Un simple slash diagonal = dire "<b>No</b>!" en barrant d'un geste.`,
+  'ハ':`<b class="key">ハ (ha)</b> — Deux traits en V ouvert = dire "<b>Ha</b>!" en ouvrant les bras.`,
+  'ヒ':`<b class="key">ヒ (hi)</b> — Un F retourné = une <b>hi</b>éroglyphe simple.`,
+  'フ':`<b class="key">フ (fu)</b> — Un crochet = hameçon. Le vent qui <b>fu</b>it trace ce geste.`,
+  'ヘ':`<b class="key">ヘ (he)</b> — Identique au hiragana へ ! Même son, même forme. Chance.`,
+  'ホ':`<b class="key">ホ (ho)</b> — Une croix + deux branches = signe <b>ho</b>spitalier (hôpital).`,
+  'マ':`<b class="key">マ (ma)</b> — Un hameçon horizontal = la <b>ma</b>nichette d'une prise électrique.`,
+  'ミ':`<b class="key">ミ (mi)</b> — Trois traits horizontaux = <b>mi</b>-chemin entre 2 lignes et 4.`,
+  'ム':`<b class="key">ム (mu)</b> — Un <b>mu</b>seau de vache vu de face. La courbe = le nez.`,
+  'メ':`<b class="key">メ (me)</b> — Un X stylisé = <b>me</b>ttre une croix, barrer quelque chose.`,
+  'モ':`<b class="key">モ (mo)</b> — Trois traits + crochet = une <b>mo</b>té de foin.`,
+  'ヤ':`<b class="key">ヤ (ya)</b> — Un Y stylisé = un <b>ya</b>k qui lève ses cornes.`,
+  'ユ':`<b class="key">ユ (u)</b> — Un U avec un trait à gauche = <b>u</b>nicorne de profil.`,
+  'ヨ':`<b class="key">ヨ (yo)</b> — Un E retourné = un <b>yo</b>-yo en forme de E.`,
+  'ラ':`<b class="key">ラ (ra)</b> — Un 7 avec un trait = une <b>ra</b>quette vue de profil.`,
+  'リ':`<b class="key">リ (ri)</b> — Deux traits descendants = deux rails d'une <b>ri</b>vière.`,
+  'ル':`<b class="key">ル (ru)</b> — Deux traits en L = des <b>ru</b>ines qui s'effondrent.`,
+  'レ':`<b class="key">レ (re)</b> — Un simple L = <b>re</b>tour à la ligne, comme le curseur.`,
+  'ロ':`<b class="key">ロ (ro)</b> — Un carré = une <b>ro</b>che taillée en bloc parfait.`,
+  'ワ':`<b class="key">ワ (wa)</b> — Un U asymétrique = un <b>wa</b>gon vu de front.`,
+  'ヲ':`<b class="key">ヲ (wo)</b> — Forme complexe = particule d'objet direct.`,
+  'ン':`<b class="key">ン (n)</b> — Ressemble à ソ retourné. Trait + courbe vers le bas.`,
+};
+const KANJI=[
+  {k:'日',on:'ニチ',kun:'ひ',mean:'Jour / Soleil',ex:[{w:'まいにち',r:'mainichi',t:'chaque jour'}]},
+  {k:'月',on:'ゲツ',kun:'つき',mean:'Mois / Lune',ex:[{w:'つき',r:'tsuki',t:'lune'}]},
+  {k:'水',on:'スイ',kun:'みず',mean:'Eau',ex:[{w:'みず',r:'mizu',t:'eau'}]},
+  {k:'山',on:'サン',kun:'やま',mean:'Montagne',ex:[{w:'やま',r:'yama',t:'montagne'}]},
+  {k:'人',on:'ジン',kun:'ひと',mean:'Personne',ex:[{w:'にほんじん',r:'nihonjin',t:'japonais'}]},
+  {k:'大',on:'ダイ',kun:'おお',mean:'Grand',ex:[{w:'おおきい',r:'ookii',t:'grand'}]},
+  {k:'本',on:'ホン',kun:'もと',mean:'Livre / Origine',ex:[{w:'ほん',r:'hon',t:'livre'}]},
+  {k:'食',on:'ショク',kun:'た',mean:'Manger',ex:[{w:'たべる',r:'taberu',t:'manger'}]},
+  {k:'車',on:'シャ',kun:'くるま',mean:'Voiture',ex:[{w:'くるま',r:'kuruma',t:'voiture'}]},
+  {k:'口',on:'コウ',kun:'くち',mean:'Bouche',ex:[{w:'くち',r:'kuchi',t:'bouche'}]},
+  {k:'火',on:'カ',kun:'ひ',mean:'Feu',ex:[{w:'かようび',r:'kayoubi',t:'mardi'}]},
+  {k:'木',on:'モク',kun:'き',mean:'Arbre',ex:[{w:'き',r:'ki',t:'arbre'}]},
+  {k:'川',on:'セン',kun:'かわ',mean:'Rivière',ex:[{w:'かわ',r:'kawa',t:'rivière'}]},
+  {k:'金',on:'キン',kun:'かね',mean:'Or / Argent',ex:[{w:'おかね',r:'okane',t:'argent'}]},
+  {k:'土',on:'ド',kun:'つち',mean:'Terre',ex:[{w:'どようび',r:'doyoubi',t:'samedi'}]},
+];
+const WPAIRS=[
+  {l:'山',r:'やま — montagne'},{l:'水',r:'みず — eau'},{l:'人',r:'ひと — personne'},
+  {l:'日',r:'ひ — soleil/jour'},{l:'本',r:'ほん — livre'},{l:'大',r:'おお — grand'},
+  {l:'火',r:'ひ — feu'},{l:'木',r:'き — arbre'},
+];
+const LWORDS=[
+  {w:'みず',r:'mizu',t:'eau'},{w:'ねこ',r:'neko',t:'chat'},{w:'いぬ',r:'inu',t:'chien'},
+  {w:'はな',r:'hana',t:'fleur'},{w:'かわ',r:'kawa',t:'rivière'},{w:'やま',r:'yama',t:'montagne'},
+  {w:'ほし',r:'hoshi',t:'étoile'},{w:'つき',r:'tsuki',t:'lune'},{w:'そら',r:'sora',t:'ciel'},
+  {w:'うみ',r:'umi',t:'mer'},{w:'さかな',r:'sakana',t:'poisson'},{w:'くるま',r:'kuruma',t:'voiture'},
+  {w:'ひと',r:'hito',t:'personne'},{w:'てき',r:'teki',t:'ennemi'},{w:'こえ',r:'koe',t:'voix'},
+];
+const LPHR=[
+  {s:'_____ は フランスじん です (Je suis français)',a:'watashi',h:'わたし',t:'"watashi" = je/moi'},
+  {s:'おはよう _____ (Bonjour formel)',a:'gozaimasu',h:'ございます',t:'Rend la phrase très polie'},
+  {s:'これ は _____ です か (Qu\'est-ce que c\'est ?)',a:'nan',h:'なん',t:'"nan/nani" = quoi, quel'},
+  {s:'すみ_____ (Excusez-moi)',a:'masen',h:'ません',t:'"sumimasen" = excusez-moi complet'},
+  {s:'わたし の なまえ は _____ です (Je m\'appelle…)',a:'loic',h:'ロイック',t:'Ton prénom en katakana'},
+];
+const HPHR=[
+  {s:'きのう えいが を _____ (Hier j\'ai regardé un film)',a:'mimashita',h:'みました',t:'Passé poli de みる'},
+  {s:'つくえ に ほん が _____ (Il y a un livre sur le bureau)',a:'arimasu',h:'あります',t:'"arimasu" = il y a (objet)'},
+  {s:'にほんご を _____ か (Parlez-vous japonais ?)',a:'hanashimasu',h:'はなします',t:'"hanashimasu" = parler'},
+  {s:'わたし は にく を たべ_____ (Je ne mange pas de viande)',a:'masen',h:'ません',t:'Négatif poli = ません'},
+  {s:'どこ に _____ か (Où êtes-vous ?)',a:'imasu',h:'います',t:'"imasu" = être (vivants)'},
+];
+
+// STATE
+let CU='loic';
+const ST={
+  loic:{xp:0,streak:0,last:null,hist:[],srs:{}},
+  helena:{xp:0,streak:0,last:null,hist:[],srs:{}},
+};
+function defC(){return{iv:0,ef:2.5,next:0,reps:0};}
+function load(){
+  try{const d=JSON.parse(localStorage.getItem('jpdv3')||'{}');
+    if(d.loic)Object.assign(ST.loic,d.loic);
+    if(d.helena)Object.assign(ST.helena,d.helena);}catch(e){}
+  H.filter(h=>h.ro&&h.jp).forEach(h=>{if(!ST.loic.srs[h.jp])ST.loic.srs[h.jp]=defC();});
+  K.filter(k=>k.ro&&k.jp).forEach(k=>{if(!ST.helena.srs[k.jp])ST.helena.srs[k.jp]=defC();});
+}
+function save(){try{localStorage.setItem('jpdv3',JSON.stringify(ST));}catch(e){}}
+function addXP(u,n){
+  ST[u].xp+=n;
+  const t=new Date().toDateString();
+  if(ST[u].last!==t){ST[u].streak++;ST[u].last=t;(ST[u].hist=ST[u].hist||[]).push(t);}
+  save();refreshTop();refreshProg();
+}
+
+// SM-2
+function reviewCard(jp,ok,user){
+  const c=ST[user].srs[jp];if(!c)return;
+  if(ok){c.reps++;c.iv=c.reps===1?1:c.reps===2?6:Math.round(c.iv*c.ef);c.ef=Math.max(1.3,c.ef+0.1);}
+  else{c.reps=0;c.iv=1;c.ef=Math.max(1.3,c.ef-0.2);}
+  c.next=Date.now()+c.iv*86400000;save();
+}
+function queue(pool,srs,n=10){
+  const now=Date.now();
+  const due=pool.filter(h=>h.ro&&h.jp&&srs[h.jp]&&srs[h.jp].next<=now&&srs[h.jp].reps>0).sort((a,b)=>srs[a.jp].next-srs[b.jp].next);
+  const nw=pool.filter(h=>h.ro&&h.jp&&srs[h.jp]&&srs[h.jp].reps===0);
+  return[...due,...nw].slice(0,n);
+}
+function stats(pool,srs){
+  const now=Date.now(),all=pool.filter(h=>h.ro&&h.jp);
+  return{nw:all.filter(h=>srs[h.jp]&&srs[h.jp].reps===0).length,
+    due:all.filter(h=>srs[h.jp]&&srs[h.jp].next<=now&&srs[h.jp].reps>0).length,
+    ok:all.filter(h=>srs[h.jp]&&srs[h.jp].reps>0&&srs[h.jp].next>now).length};
+}
+function ivLabel(jp,ok,user){
+  const c=ST[user].srs[jp];if(!c)return'?';
+  const iv=ok?(c.reps<2?[1,6][c.reps]||Math.round(c.iv*c.ef):Math.round(c.iv*c.ef)):1;
+  return iv===1?'demain':iv<7?iv+' j':Math.round(iv/7)+' sem.';
+}
+
+// SRS LOIC
+let SQ=[],SI=0,SOK=0;
+function startSRS(){
+  SQ=queue(H,ST.loic.srs);SI=0;SOK=0;
+  updStat();
+  el('sdone').style.display='none';el('sc').style.display='block';
+  if(!SQ.length){endSRS('loic');return;}
+  renderSRS();
+}
+function updStat(){const s=stats(H,ST.loic.srs);set('sn',s.nw);set('sd',s.due);set('so',s.ok);}
+function renderSRS(){
+  if(SI>=SQ.length){endSRS('loic');return;}
+  const q=SQ[SI];
+  set('schar',q.jp);
+  const m=MNEM[q.jp];
+  if(m){el('smnem').className='mcard show';el('smtext').innerHTML=m;}else el('smnem').className='mcard';
+  const pool=H.filter(h=>h.ro&&h.jp&&h.ro!==q.ro);
+  const opts=[q,...pool.sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
+  el('schoices').innerHTML=opts.map((o,i)=>`<button class="choice" onclick="ansSRS(this,'${o.ro}','${q.ro}','${q.jp}')"><span class="cltr">${'ABCD'[i]}</span>${o.ro}</button>`).join('');
+  el('sfb').className='fb';el('snx').disabled=true;
+}
+function ansSRS(btn,chosen,correct,jp){
+  btn.parentElement.querySelectorAll('.choice').forEach(b=>b.onclick=null);
+  const ok=chosen===correct;
+  if(ok){btn.classList.add('correct');SOK++;el('sfb').className='fb ok show';el('sfb').innerHTML='✓ Correct ! Prochain : '+ivLabel(jp,true,'loic')+' &nbsp;<button class="speak-btn" onclick="speak(\''+jp+'\')" style="font-size:.7rem">🔊</button>';speak(jp);addXP('loic',10);}
+  else{btn.classList.add('wrong');el('sfb').className='fb ko show';el('sfb').innerHTML='✗ C\'était : <b>'+correct+'</b> — Reviendra dans 1 jour.';btn.parentElement.querySelectorAll('.choice').forEach(b=>{if(b.textContent.includes(correct))b.classList.add('correct');});}
+  reviewCard(jp,ok,'loic');el('snx').disabled=false;updStat();
+}
+function nextSRS(){SI++;renderSRS();}
+function endSRS(u){
+  const isL=u==='loic';
+  el(isL?'sc':'hsc').style.display='none';el(isL?'sdone':'hsdone').style.display='block';
+  const pct=SQ.length?Math.round(SOK/SQ.length*100):100;
+  set(isL?'spct':'hspct',pct+'%');
+  const msg=pct>=80?'🎉 Excellente session !':pct>=50?'👍 Bien ! Continue.':'💪 Ces caractères reviendront vite.';
+  set(isL?'smsg':'hsmsg',SQ.length+' cartes · '+SOK+' correctes — '+msg);
+  addXP(u,50);
+}
+
+// SRS HELENA
+let HSQ=[],HSI=0,HSOK=0;
+function startHSRS(){
+  HSQ=queue(K,ST.helena.srs);HSI=0;HSOK=0;
+  const s=stats(K,ST.helena.srs);set('hsn',s.nw);set('hsd',s.due);set('hso',s.ok);
+  el('hsdone').style.display='none';el('hsc').style.display='block';
+  if(!HSQ.length){endHSRS();return;}
+  renderHSRS();
+}
+function renderHSRS(){
+  if(HSI>=HSQ.length){endHSRS();return;}
+  const q=HSQ[HSI];
+  set('hschar',q.jp);
+  const m=KMNEM[q.jp];
+  if(m){el('hsmnem').className='mcard show';el('hsmtext').innerHTML=m;}else el('hsmnem').className='mcard';
+  const pool=K.filter(k=>k.ro&&k.jp&&k.ro!==q.ro);
+  const opts=[q,...pool.sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
+  el('hschoices').innerHTML=opts.map((o,i)=>`<button class="choice" onclick="ansHSRS(this,'${o.ro}','${q.ro}','${q.jp}')"><span class="cltr">${'ABCD'[i]}</span>${o.ro}</button>`).join('');
+  el('hsfb').className='fb';el('hsnx').disabled=true;
+}
+function ansHSRS(btn,chosen,correct,jp){
+  btn.parentElement.querySelectorAll('.choice').forEach(b=>b.onclick=null);
+  const ok=chosen===correct;
+  if(ok){btn.classList.add('correct');HSOK++;el('hsfb').className='fb ok show';el('hsfb').innerHTML='✓ Correct ! Prochain : '+ivLabel(jp,true,'helena')+' &nbsp;<button class="speak-btn" onclick="speak(\''+jp+'\')" style="font-size:.7rem">🔊</button>';speak(jp);addXP('helena',10);}
+  else{btn.classList.add('wrong');el('hsfb').className='fb ko show';el('hsfb').innerHTML='✗ C\'était : <b>'+correct+'</b>';btn.parentElement.querySelectorAll('.choice').forEach(b=>{if(b.textContent.includes(correct))b.classList.add('correct');});}
+  reviewCard(jp,ok,'helena');el('hsnx').disabled=false;
+  const s=stats(K,ST.helena.srs);set('hsn',s.nw);set('hsd',s.due);set('hso',s.ok);
+}
+function nextHSRS(){HSI++;renderHSRS();}
+function endHSRS(){
+  el('hsc').style.display='none';el('hsdone').style.display='block';
+  const pct=HSQ.length?Math.round(HSOK/HSQ.length*100):100;
+  set('hspct',pct+'%');
+  const msg=pct>=80?'🎉 Excellente session !':pct>=50?'👍 Continue !':'💪 Ça reviendra vite.';
+  set('hsmsg',HSQ.length+' cartes · '+HSOK+' correctes — '+msg);
+  addXP('helena',50);
+}
+
+// HIRAGANA GRID
+function buildHGrid(){
+  const g=el('hgrid');if(!g)return;g.innerHTML='';
+  H.forEach(h=>{
+    const c=document.createElement('div');
+    if(!h.ro||!h.jp){c.className='hcell empty';g.appendChild(c);return;}
+    c.className='hcell';
+    const sr=ST.loic.srs[h.jp];
+    const col=sr?(sr.reps===0?'#e8a020':sr.iv>6?'#3dba6f':'#e87020'):'#e8a020';
+    c.innerHTML=`<span class="sbdg" style="background:${col}"></span><span class="hj">${h.jp}</span><span class="hr">${h.ro}</span>`;
+    c.onclick=()=>{
+      document.querySelectorAll('.hcell').forEach(x=>x.classList.remove('slc'));c.classList.add('slc');
+      el('hfoc').style.display='block';set('hfb',h.jp);set('hfr',h.ro.toUpperCase());
+      const m=el('hfm');const mn=MNEM[h.jp];
+      if(mn){m.className='mnem show';m.innerHTML=mn;}else m.className='mnem';
+    };
+    g.appendChild(c);
+  });
+}
+function buildHQ(){
+  const pool=H.filter(h=>h.ro&&h.jp);const q=pool[Math.floor(Math.random()*pool.length)];
+  const wrongs=pool.filter(h=>h.ro!==q.ro).sort(()=>Math.random()-.5).slice(0,3);
+  const opts=[q,...wrongs].sort(()=>Math.random()-.5);
+  const mn=MNEM[q.jp]?`<div class="mnem show" style="margin-top:10px">${MNEM[q.jp]}</div>`:'';
+  el('hqz').innerHTML=`<div class="wbig">${q.jp}</div><div style="text-align:center;margin-top:-8px"><button class="speak-btn" onclick="speak('${q.jp}')">🔊 Écouter</button></div>
+    <div class="choices">${opts.map((o,i)=>`<button class="choice" onclick="ansG(this,'${o.ro}','${q.ro}','hqfb','loic')"><span class="cltr">${'ABCD'[i]}</span>${o.ro}</button>`).join('')}</div>
+    ${mn}<div class="fb" id="hqfb"></div>
+    <div class="nrow"><button class="btn ghost" style="margin-top:10px" onclick="buildHQ()">Autre →</button></div>`;
+}
+
+// GENERIC ANSWER
+function ansG(btn,chosen,correct,fbId,user){
+  btn.parentElement.querySelectorAll('.choice').forEach(b=>b.onclick=null);
+  const ok=chosen===correct;
+  if(ok){btn.classList.add('correct');el(fbId).className='fb ok show';el(fbId).textContent='✓ Correct !';addXP(user,10);}
+  else{btn.classList.add('wrong');el(fbId).className='fb ko show';el(fbId).textContent='✗ C\'était : '+correct;btn.parentElement.querySelectorAll('.choice').forEach(b=>{if(b.textContent.includes(correct))b.classList.add('correct');});}
+}
+
+// WORD READ
+function buildWR(){
+  const pick=LWORDS.sort(()=>Math.random()-.5).slice(0,5);
+  el('wrc').innerHTML=pick.map((w,i)=>`
+    <div class="card" style="margin-bottom:12px;border-left:2px solid var(--lc)">
+      <div style="font-size:.65rem;color:var(--mu);text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px">Mot ${i+1} — Sens : <b style="color:var(--tx)">${w.t}</b></div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+        <div class="wbig" style="font-size:2.2rem;margin:14px 0">${w.w}</div>
+        <button class="speak-btn" onclick="speak('${w.w}')">🔊</button>
+      </div>
+      <div class="inrow"><input class="jinp lf" id="wr${i}" placeholder="romanisation..." autocomplete="off" data-a="${w.r}"></div>
+      <div class="fb" id="wrf${i}"></div>
+    </div>`).join('');
+  el('wrfb').className='fb';
+}
+function checkWR(){
+  const ins=document.querySelectorAll('[id^="wr"]:not([id^="wrf"])');let ok=0;
+  ins.forEach(inp=>{
+    const i=inp.id.replace('wr','');const val=inp.value.trim().toLowerCase();const ans=inp.dataset.a;
+    const fb=el('wrf'+i);
+    if(val===ans){ok++;inp.classList.add('correct');inp.classList.remove('wrong');fb.className='fb ok show';fb.textContent='✓ '+ans;addXP('loic',10);}
+    else{inp.classList.add('wrong');inp.classList.remove('correct');fb.className='fb ko show';fb.textContent='✗ Réponse : '+ans;}
+  });
+  const gfb=el('wrfb');gfb.className=`fb ${ok===ins.length?'ok':'ko'} show`;
+  gfb.textContent=`${ok}/${ins.length} — ${ok===ins.length?'Parfait ! Tu lis le hiragana 🎉':'Relis la table et réessaie.'}`;
+  if(ok===ins.length)addXP('loic',50);
+}
+
+// PHRASES LOIC
+function buildLP(){
+  el('lphr').innerHTML=LPHR.map((p,i)=>`
+    <div class="card" style="margin-bottom:14px;border-left:2px solid var(--lc)">
+      <div class="clbl">Phrase ${i+1}</div>
+      <div style="margin-bottom:10px">${p.s}</div>
+      <div class="inrow"><input class="jinp lf" id="lp${i}" placeholder="romanisation..." autocomplete="off">
+      <button class="btn ghost" onclick="hint('lpf${i}','${p.h}')">Indice</button></div>
+      <div class="fb" id="lpf${i}"></div>
+    </div>`).join('');
+  el('lpfb').className='fb';
+}
+function checkLP(){
+  let ok=0;LPHR.forEach((p,i)=>{
+    const v=(el('lp'+i)?.value||'').trim().toLowerCase();const inp=el('lp'+i);const fb=el('lpf'+i);
+    if(v===p.a){ok++;inp.classList.add('correct');inp.classList.remove('wrong');fb.className='fb ok show';fb.textContent='✓ '+p.t;addXP('loic',10);}
+    else{inp.classList.add('wrong');inp.classList.remove('correct');fb.className='fb ko show';fb.textContent='✗ Réponse : '+p.a+' — '+p.t;}
+  });
+  const gfb=el('lpfb');gfb.className=`fb ${ok===LPHR.length?'ok':'ko'} show`;
+  gfb.textContent=`${ok}/${LPHR.length} — ${ok===LPHR.length?'Parfait ! +50 XP 🎉':'Relis et réessaie.'}`;
+  if(ok===LPHR.length)addXP('loic',50);
+}
+
+// PHRASES HELENA
+function buildHP(){
+  el('hphr').innerHTML=HPHR.map((p,i)=>`
+    <div class="card" style="margin-bottom:14px;border-left:2px solid var(--hl)">
+      <div class="clbl">Phrase ${i+1}</div>
+      <div style="margin-bottom:10px">${p.s}</div>
+      <div class="inrow"><input class="jinp hf" id="hp${i}" placeholder="romanisation..." autocomplete="off">
+      <button class="btn ghost" onclick="hint('hpf${i}','${p.h}')">Indice</button></div>
+      <div class="fb" id="hpf${i}"></div>
+    </div>`).join('');
+  el('hpfb').className='fb';
+}
+function checkHP(){
+  let ok=0;HPHR.forEach((p,i)=>{
+    const v=(el('hp'+i)?.value||'').trim().toLowerCase();const inp=el('hp'+i);const fb=el('hpf'+i);
+    if(v===p.a){ok++;inp.classList.add('correct');inp.classList.remove('wrong');fb.className='fb ok show';fb.textContent='✓ '+p.t;addXP('helena',10);}
+    else{inp.classList.add('wrong');inp.classList.remove('correct');fb.className='fb ko show';fb.textContent='✗ Réponse : '+p.a+' — '+p.t;}
+  });
+  const gfb=el('hpfb');gfb.className=`fb ${ok===HPHR.length?'ok':'ko'} show`;
+  gfb.textContent=`${ok}/${HPHR.length} — ${ok===HPHR.length?'Excellent ! +50 XP 🎉':'Relis les structures.'}`;
+  if(ok===HPHR.length)addXP('helena',50);
+}
+function hint(fbId,h){el(fbId).className='fb info show';el(fbId).textContent='Indice : '+h;}
+
+// KANJI
+function buildKList(){
+  el('klist').innerHTML=KANJI.map(k=>`
+    <div class="kshow"><div class="kbig">${k.k}</div>
+    <div class="kinfo"><div class="kmean">${k.mean}</div>
+    <div class="kon">On: <span>${k.on}</span> &nbsp; Kun: <span>${k.kun}</span></div>
+    <div class="kex">${k.ex.map(e=>`<b>${e.w}</b>${e.r} — ${e.t}`).join(' · ')}</div></div></div>`).join('');
+  buildKQ();
+}
+function buildKQ(){
+  const q=KANJI[Math.floor(Math.random()*KANJI.length)];
+  const wr=KANJI.filter(k=>k.k!==q.k).sort(()=>Math.random()-.5).slice(0,3);
+  const opts=[q,...wr].sort(()=>Math.random()-.5);
+  el('kqz').innerHTML=`<div class="wbig" style="color:var(--hl)">${q.k}</div>
+    <div class="choices">${opts.map((o,i)=>`<button class="choice" onclick="ansG(this,'${o.mean}','${q.mean}','kqfb','helena')"><span class="cltr">${'ABCD'[i]}</span>${o.mean}</button>`).join('')}</div>
+    <div class="fb" id="kqfb"></div>
+    <div class="nrow"><button class="btn ghost" style="margin-top:10px" onclick="buildKQ()">Autre →</button></div>`;
+}
+
+// MATCH
+let WMS=null;
+function initWM(){
+  const pairs=WPAIRS.sort(()=>Math.random()-.5).slice(0,5);
+  const right=[...pairs].sort(()=>Math.random()-.5);
+  el('wml').innerHTML='';el('wmr').innerHTML='';el('wmfb').className='fb';WMS=null;
+  pairs.forEach(p=>{const e=document.createElement('div');e.className='mitem jpitem';e.textContent=p.l;e.dataset.k=p.l;e.onclick=()=>selL(e);el('wml').appendChild(e);});
+  right.forEach(p=>{const e=document.createElement('div');e.className='mitem';e.textContent=p.r;e.dataset.k=p.l;e.onclick=()=>selR(e);el('wmr').appendChild(e);});
+}
+function selL(e){if(e.classList.contains('mok'))return;el('wml').querySelectorAll('.mitem').forEach(x=>x.classList.remove('sel'));e.classList.add('sel');WMS=e;}
+function selR(e){
+  if(!WMS||e.classList.contains('mok'))return;
+  if(WMS.dataset.k===e.dataset.k){WMS.classList.remove('sel');WMS.classList.add('mok');e.classList.add('mok');WMS=null;addXP('helena',10);
+    if(el('wml').querySelectorAll('.mitem').length===el('wml').querySelectorAll('.mok').length){el('wmfb').className='fb ok show';el('wmfb').textContent='✓ Parfait ! +50 XP';addXP('helena',50);}
+  }else{e.classList.add('mnok');setTimeout(()=>e.classList.remove('mnok'),500);WMS.classList.remove('sel');WMS=null;}
+}
+
+// PROGRESSION
+function refreshTop(){const u=ST[CU];set('tsk',u.streak);set('txp',u.xp);}
+function refreshProg(){
+  const iL=CU==='loic',u=ST[CU];
+  const sgId=iL?'lsg':'hsg',snId=iL?'lsn':'hsn2',xnId=iL?'lxn':'hxn',lnId=iL?'lln':'hln',cls=iL?'lc':'hl';
+  const g=el(sgId);
+  if(g){const days=['L','M','M','J','V','S','D'];g.innerHTML='';
+    for(let i=27;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toDateString();
+      const done=(u.hist||[]).includes(ds),isT=i===0;
+      const c=document.createElement('div');c.className='sday'+(done?' done '+cls:'')+(isT&&!done?' today':'');
+      c.innerHTML=`<span>${days[d.getDay()]}</span><span>${d.getDate()}</span>`;g.appendChild(c);}}
+  if(el(snId))set(snId,u.streak);if(el(xnId))set(xnId,u.xp);if(el(lnId))set(lnId,Math.floor(u.xp/100)+1);
+  const mg=el('hmg');
+  if(mg&&iL){mg.innerHTML='';
+    H.forEach(h=>{if(!h.ro||!h.jp){const e=document.createElement('div');e.style.visibility='hidden';mg.appendChild(e);return;}
+      const c=ST.loic.srs[h.jp];
+      const bc=!c||c.reps===0?'#2d1e04':c.iv>6?'#0a2018':'#2d1a00';
+      const tc=!c||c.reps===0?'#e8a020':c.iv>6?'#3dba6f':'#e87020';
+      const e=document.createElement('div');e.style.cssText=`background:${bc};border:1px solid ${tc};text-align:center;padding:5px 2px`;
+      e.innerHTML=`<span style="font-family:var(--jp);font-size:1.05rem;color:${tc}">${h.jp}</span>`;mg.appendChild(e);});}
+}
+
+// NAV
+const LTABS=[{id:'l-srs',ic:'復',lb:'SRS'},{id:'l-hira',ic:'あ',lb:'Hiragana'},{id:'l-vocab',ic:'語',lb:'Vocab & Lecture'},{id:'l-phrases',ic:'文',lb:'Phrases'},{id:'l-prog',ic:'📊',lb:'Progrès'}];
+const HTABS=[{id:'h-srs',ic:'復',lb:'SRS Kata'},{id:'h-kanji',ic:'漢',lb:'Kanji'},{id:'h-grammar',ic:'文法',lb:'Grammaire'},{id:'h-match',ic:'合',lb:'Association'},{id:'h-prog',ic:'📊',lb:'Progrès'}];
+function buildTabs(tabs,cls){
+  const bar=el('tabbar');bar.innerHTML='';
+  tabs.forEach((t,i)=>{
+    const btn=document.createElement('button');btn.className='tbtn '+cls;
+    btn.innerHTML=`<span>${t.ic}</span>${t.lb}`;
+    btn.onclick=()=>{tabs.forEach(x=>el(x.id)?.classList.remove('active'));bar.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));el(t.id)?.classList.add('active');btn.classList.add('active');};
+    if(i===0)btn.classList.add('active');bar.appendChild(btn);
+  });
+}
+function startApp(user){
+  CU=user;el('splash').style.display='none';el('app').style.display='block';
+  el('lp').style.display=user==='loic'?'':'none';el('hp').style.display=user==='helena'?'':'none';
+  const pill=el('tpill');
+  if(user==='loic'){pill.className='upill lcp';pill.textContent='Loïc — Débutant';buildTabs(LTABS,'lct');el('l-srs').classList.add('active');}
+  else{pill.className='upill hlp';pill.textContent='Helena — Intermédiaire';buildTabs(HTABS,'hlt');el('h-srs').classList.add('active');}
+  refreshTop();refreshProg();
+  buildHGrid();buildHQ();buildKList();buildWR();buildLP();buildHP();initWM();
+  if(user==='loic')startSRS();else startHSRS();
+}
+function goSplash(){
+  el('splash').style.display='flex';el('app').style.display='none';
+  set('lks',ST.loic.streak);set('lxs',ST.loic.xp);set('hks',ST.helena.streak);set('hxs',ST.helena.xp);
+}
+
+function speak(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP';
+  u.rate = 0.85;
+  const voices = window.speechSynthesis.getVoices();
+  const jpVoice = voices.find(v => v.lang.startsWith('ja'));
+  if (jpVoice) u.voice = jpVoice;
+  window.speechSynthesis.speak(u);
+}
+window.speechSynthesis.onvoiceschanged = () => {};
+
+function el(id){return document.getElementById(id);}
+function set(id,v){const e=el(id);if(e)e.textContent=v;}
+
+load();
+set('lks',ST.loic.streak);set('lxs',ST.loic.xp);set('hks',ST.helena.streak);set('hxs',ST.helena.xp);
+</script>
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('/japonais-dojo/sw.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
