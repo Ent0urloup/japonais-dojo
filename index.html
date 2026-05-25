@@ -1,3 +1,6 @@
+
+raw
+Index · HTML
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -154,7 +157,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--ui);min-height:100vh
 .romantic-ro{font-size:.78rem;color:var(--mu);font-family:var(--mono);margin-bottom:3px}
 .romantic-fr{font-size:.82rem;color:var(--tx)}
 .pill{display:inline-block;font-size:.56rem;padding:2px 6px;letter-spacing:.1em;text-transform:uppercase;margin-right:4px}
-.pill.n5{background:#1a2d1a;color:#5fa85f}.pill.n4{background:#1a1a2d;color:#5f5fa8}.pill.n3{background:#2d1a1a;color:#a85f5f}
+.pill.n5{background:#1a2d1a;color:#5fa85f}.pill.n4{background:#1a1a2d;color:#5f5fa8}.pill.n3{background:#2d1a1a;color:#a85f5f}.pill.n2{background:#2d1a2d;color:#c08fd0}
 </style>
 </head>
 <body>
@@ -170,8 +173,8 @@ body{background:var(--bg);color:var(--tx);font-family:var(--ui);min-height:100vh
     </div>
     <div class="pcard hl" onclick="startApp('helena')">
       <span class="pkanji">進</span>
-      <div class="pname">Helena</div><div class="plvl">Niveau Intermédiaire+</div>
-      <div class="pbadge">⚡ JLPT N4→N3</div><br>
+      <div class="pname">Helena</div><div class="plvl">Niveau Avancé</div>
+      <div class="pbadge">⚡ JLPT N3→N2</div><br>
       <div class="pstreak">🔥 <b id="hks">0</b> j &nbsp;·&nbsp; ⭐ <b id="hxs">0</b> XP</div>
     </div>
   </div>
@@ -351,15 +354,15 @@ body{background:var(--bg);color:var(--tx);font-family:var(--ui);min-height:100vh
  
     <div class="panel" id="h-kanji">
       <div class="stitle"><span class="acc hl">漢</span> Kanji N5→N4</div>
-      <div class="sdesc">40 kanji essentiels avec on·yomi, kun·yomi et exemples en contexte. <span class="pill n5">N5</span><span class="pill n4">N4</span></div>
+      <div class="sdesc">60 kanji essentiels N5→N2 avec on·yomi, kun·yomi et exemples en contexte. <span class="pill n5">N5</span><span class="pill n4">N4</span></div>
       <div id="klist"></div>
       <div class="card"><div class="clbl">Quiz Kanji → Signification</div><div id="kqz"></div></div>
     </div>
  
     <div class="panel" id="h-grammar">
       <div class="stitle"><span class="acc hl">文法</span> Grammaire N4→N3</div>
-      <div class="sdesc">15 structures grammaticales essentielles + exercices de complétion.</div>
-      <div class="card"><div class="clbl">Structures <span class="pill n5">N5</span><span class="pill n4">N4</span><span class="pill n3">N3</span></div>
+      <div class="sdesc">20 structures grammaticales N5→N2 + exercices de complétion.</div>
+      <div class="card"><div class="clbl">Structures <span class="pill n5">N5</span><span class="pill n4">N4</span><span class="pill n3">N3</span><span class="pill n2" style="background:#2d1a2d;color:#c08fd0">N2</span></div>
         <div id="grammar-list"></div>
       </div>
       <div class="card"><div class="clbl">Complète la phrase</div>
@@ -535,7 +538,7 @@ const KMNEM={
   'ン':'<b class="key">ン (n)</b> — Comme ソ retourné.',
 };
  
-// KANJI — 40 kanji N5+N4
+// KANJI — 60 kanji N5→N2
 const KANJI=[
   // N5
   {k:'日',on:'ニチ',kun:'ひ',mean:'Jour/Soleil',lvl:'n5',ex:[{w:'まいにち',r:'mainichi',t:'chaque jour'}]},
@@ -544,60 +547,80 @@ const KANJI=[
   {k:'水',on:'スイ',kun:'みず',mean:'Eau',lvl:'n5',ex:[{w:'みず',r:'mizu',t:'eau'}]},
   {k:'木',on:'モク',kun:'き',mean:'Arbre',lvl:'n5',ex:[{w:'き',r:'ki',t:'arbre'}]},
   {k:'金',on:'キン',kun:'かね',mean:'Or/Argent',lvl:'n5',ex:[{w:'おかね',r:'okane',t:'argent'}]},
-  {k:'土',on:'ド',kun:'つち',mean:'Terre/Sol',lvl:'n5',ex:[{w:'どようび',r:'doyoubi',t:'samedi'}]},
   {k:'山',on:'サン',kun:'やま',mean:'Montagne',lvl:'n5',ex:[{w:'ふじさん',r:'fujisan',t:'mont Fuji'}]},
-  {k:'川',on:'セン',kun:'かわ',mean:'Rivière',lvl:'n5',ex:[{w:'かわ',r:'kawa',t:'rivière'}]},
   {k:'人',on:'ジン',kun:'ひと',mean:'Personne',lvl:'n5',ex:[{w:'にほんじん',r:'nihonjin',t:'japonais'}]},
   {k:'大',on:'ダイ',kun:'おお',mean:'Grand',lvl:'n5',ex:[{w:'だいがく',r:'daigaku',t:'université'}]},
-  {k:'小',on:'ショウ',kun:'ちい',mean:'Petit',lvl:'n5',ex:[{w:'ちいさい',r:'chiisai',t:'petit'}]},
   {k:'本',on:'ホン',kun:'もと',mean:'Livre/Origine',lvl:'n5',ex:[{w:'にほん',r:'nihon',t:'Japon'}]},
-  {k:'食',on:'ショク',kun:'た',mean:'Manger',lvl:'n5',ex:[{w:'たべる',r:'taberu',t:'manger'}]},
-  {k:'飲',on:'イン',kun:'の',mean:'Boire',lvl:'n5',ex:[{w:'のむ',r:'nomu',t:'boire'}]},
-  {k:'見',on:'ケン',kun:'み',mean:'Voir/Regarder',lvl:'n5',ex:[{w:'みる',r:'miru',t:'voir'}]},
-  {k:'行',on:'コウ',kun:'い',mean:'Aller',lvl:'n5',ex:[{w:'いく',r:'iku',t:'aller'}]},
-  {k:'来',on:'ライ',kun:'く',mean:'Venir',lvl:'n5',ex:[{w:'くる',r:'kuru',t:'venir'}]},
-  {k:'言',on:'ゲン',kun:'い',mean:'Dire/Parole',lvl:'n5',ex:[{w:'いう',r:'iu',t:'dire'}]},
-  {k:'聞',on:'ブン',kun:'き',mean:'Entendre/Écouter',lvl:'n5',ex:[{w:'きく',r:'kiku',t:'écouter'}]},
   // N4
   {k:'思',on:'シ',kun:'おも',mean:'Penser',lvl:'n4',ex:[{w:'おもう',r:'omou',t:'penser'}]},
-  {k:'知',on:'チ',kun:'し',mean:'Savoir/Connaître',lvl:'n4',ex:[{w:'しる',r:'shiru',t:'savoir'}]},
+  {k:'知',on:'チ',kun:'し',mean:'Savoir',lvl:'n4',ex:[{w:'しる',r:'shiru',t:'savoir'}]},
   {k:'使',on:'シ',kun:'つか',mean:'Utiliser',lvl:'n4',ex:[{w:'つかう',r:'tsukau',t:'utiliser'}]},
-  {k:'買',on:'バイ',kun:'か',mean:'Acheter',lvl:'n4',ex:[{w:'かう',r:'kau',t:'acheter'}]},
-  {k:'売',on:'バイ',kun:'う',mean:'Vendre',lvl:'n4',ex:[{w:'うる',r:'uru',t:'vendre'}]},
   {k:'読',on:'ドク',kun:'よ',mean:'Lire',lvl:'n4',ex:[{w:'よむ',r:'yomu',t:'lire'}]},
   {k:'書',on:'ショ',kun:'か',mean:'Écrire',lvl:'n4',ex:[{w:'かく',r:'kaku',t:'écrire'}]},
-  {k:'話',on:'ワ',kun:'はな',mean:'Parler/Histoire',lvl:'n4',ex:[{w:'はなす',r:'hanasu',t:'parler'}]},
-  {k:'開',on:'カイ',kun:'あ',mean:'Ouvrir',lvl:'n4',ex:[{w:'あける',r:'akeru',t:'ouvrir'}]},
-  {k:'閉',on:'ヘイ',kun:'し',mean:'Fermer',lvl:'n4',ex:[{w:'しめる',r:'shimeru',t:'fermer'}]},
-  {k:'起',on:'キ',kun:'お',mean:'Se lever/Arriver',lvl:'n4',ex:[{w:'おきる',r:'okiru',t:'se lever'}]},
-  {k:'寝',on:'シン',kun:'ね',mean:'Dormir',lvl:'n4',ex:[{w:'ねる',r:'neru',t:'dormir'}]},
-  {k:'待',on:'タイ',kun:'ま',mean:'Attendre',lvl:'n4',ex:[{w:'まつ',r:'matsu',t:'attendre'}]},
-  {k:'会',on:'カイ',kun:'あ',mean:'Rencontrer/Réunion',lvl:'n4',ex:[{w:'あう',r:'au',t:'rencontrer'}]},
-  {k:'好',on:'コウ',kun:'す',mean:'Aimer/Apprécier',lvl:'n4',ex:[{w:'すき',r:'suki',t:'aimer'}]},
-  {k:'悪',on:'アク',kun:'わる',mean:'Mauvais/Mal',lvl:'n4',ex:[{w:'わるい',r:'warui',t:'mauvais'}]},
+  {k:'話',on:'ワ',kun:'はな',mean:'Parler',lvl:'n4',ex:[{w:'はなす',r:'hanasu',t:'parler'}]},
+  {k:'好',on:'コウ',kun:'す',mean:'Aimer',lvl:'n4',ex:[{w:'すき',r:'suki',t:'aimer'}]},
   {k:'新',on:'シン',kun:'あたら',mean:'Nouveau',lvl:'n4',ex:[{w:'あたらしい',r:'atarashii',t:'nouveau'}]},
-  {k:'古',on:'コ',kun:'ふる',mean:'Vieux/Ancien',lvl:'n4',ex:[{w:'ふるい',r:'furui',t:'vieux'}]},
   {k:'高',on:'コウ',kun:'たか',mean:'Haut/Cher',lvl:'n4',ex:[{w:'たかい',r:'takai',t:'haut/cher'}]},
-  {k:'安',on:'アン',kun:'やす',mean:'Bon marché/Calme',lvl:'n4',ex:[{w:'やすい',r:'yasui',t:'bon marché'}]},
+  {k:'会',on:'カイ',kun:'あ',mean:'Rencontrer',lvl:'n4',ex:[{w:'あう',r:'au',t:'rencontrer'}]},
+  {k:'起',on:'キ',kun:'お',mean:'Se lever',lvl:'n4',ex:[{w:'おきる',r:'okiru',t:'se lever'}]},
+  {k:'待',on:'タイ',kun:'ま',mean:'Attendre',lvl:'n4',ex:[{w:'まつ',r:'matsu',t:'attendre'}]},
+  {k:'悪',on:'アク',kun:'わる',mean:'Mauvais',lvl:'n4',ex:[{w:'わるい',r:'warui',t:'mauvais'}]},
+  {k:'安',on:'アン',kun:'やす',mean:'Bon marché',lvl:'n4',ex:[{w:'やすい',r:'yasui',t:'bon marché'}]},
+  {k:'買',on:'バイ',kun:'か',mean:'Acheter',lvl:'n4',ex:[{w:'かう',r:'kau',t:'acheter'}]},
+  // N3
+  {k:'感',on:'カン',kun:'かん',mean:'Sentiment/Sens',lvl:'n3',ex:[{w:'かんじる',r:'kanjiru',t:'sentir/ressentir'}]},
+  {k:'意',on:'イ',kun:'い',mean:'Volonté/Sens',lvl:'n3',ex:[{w:'いみ',r:'imi',t:'signification'}]},
+  {k:'場',on:'ジョウ',kun:'ば',mean:'Endroit/Lieu',lvl:'n3',ex:[{w:'ばしょ',r:'basho',t:'endroit'}]},
+  {k:'様',on:'ヨウ',kun:'さま',mean:'Façon/Manière',lvl:'n3',ex:[{w:'どうぞよろしく',r:'douzo yoroshiku',t:'enchanté'}]},
+  {k:'以',on:'イ',kun:'い',mean:'Par rapport à',lvl:'n3',ex:[{w:'いじょう',r:'ijou',t:'plus de / au-dessus'}]},
+  {k:'関',on:'カン',kun:'せき',mean:'Rapport/Lien',lvl:'n3',ex:[{w:'かんけい',r:'kankei',t:'relation/lien'}]},
+  {k:'現',on:'ゲン',kun:'あらわ',mean:'Actuel/Présent',lvl:'n3',ex:[{w:'げんざい',r:'genzai',t:'actuellement'}]},
+  {k:'対',on:'タイ',kun:'たい',mean:'Contre/Face à',lvl:'n3',ex:[{w:'たいして',r:'taishite',t:'envers/par rapport à'}]},
+  {k:'問',on:'モン',kun:'とい',mean:'Question/Problème',lvl:'n3',ex:[{w:'もんだい',r:'mondai',t:'problème'}]},
+  {k:'経',on:'ケイ',kun:'へ',mean:'Passer/Expérience',lvl:'n3',ex:[{w:'けいけん',r:'keiken',t:'expérience'}]},
+  {k:'続',on:'ゾク',kun:'つづ',mean:'Continuer',lvl:'n3',ex:[{w:'つづける',r:'tsuzukeru',t:'continuer'}]},
+  {k:'変',on:'ヘン',kun:'か',mean:'Changer/Bizarre',lvl:'n3',ex:[{w:'かわる',r:'kawaru',t:'changer'}]},
+  {k:'全',on:'ゼン',kun:'すべ',mean:'Tout/Entier',lvl:'n3',ex:[{w:'ぜんぶ',r:'zenbu',t:'tout'}]},
+  {k:'必',on:'ヒツ',kun:'かなら',mean:'Nécessaire/Certain',lvl:'n3',ex:[{w:'かならず',r:'kanarazu',t:'certainement'}]},
+  {k:'特',on:'トク',kun:'とく',mean:'Spécial/Particulier',lvl:'n3',ex:[{w:'とくに',r:'tokuni',t:'particulièrement'}]},
+  {k:'様',on:'ヨウ',kun:'よう',mean:'Apparence/Façon',lvl:'n3',ex:[{w:'ようす',r:'yousu',t:'apparence/situation'}]},
+  // N2
+  {k:'際',on:'サイ',kun:'きわ',mean:'Occasion/Bord',lvl:'n2',ex:[{w:'こくさい',r:'kokusai',t:'international'}]},
+  {k:'状',on:'ジョウ',kun:'じょう',mean:'État/Condition',lvl:'n2',ex:[{w:'じょうたい',r:'joutai',t:'état/condition'}]},
+  {k:'断',on:'ダン',kun:'ことわ',mean:'Refuser/Couper',lvl:'n2',ex:[{w:'ことわる',r:'kotowaru',t:'refuser'}]},
+  {k:'恐',on:'キョウ',kun:'おそ',mean:'Craindre/Peur',lvl:'n2',ex:[{w:'おそれる',r:'osoreru',t:'craindre'}]},
+  {k:'迷',on:'メイ',kun:'まよ',mean:'Se perdre/Hésiter',lvl:'n2',ex:[{w:'まよう',r:'mayou',t:'se perdre/hésiter'}]},
+  {k:'覚',on:'カク',kun:'おぼ',mean:'Se souvenir/Apprendre',lvl:'n2',ex:[{w:'おぼえる',r:'oboeru',t:'mémoriser'}]},
+  {k:'過',on:'カ',kun:'す',mean:'Passer/Dépasser',lvl:'n2',ex:[{w:'すぎる',r:'sugiru',t:'trop/dépasser'}]},
+  {k:'違',on:'イ',kun:'ちが',mean:'Différent/Erreur',lvl:'n2',ex:[{w:'ちがう',r:'chigau',t:'être différent'}]},
+  {k:'渡',on:'ト',kun:'わた',mean:'Traverser/Passer',lvl:'n2',ex:[{w:'わたる',r:'wataru',t:'traverser'}]},
+  {k:'認',on:'ニン',kun:'みと',mean:'Reconnaître/Admettre',lvl:'n2',ex:[{w:'みとめる',r:'mitomeru',t:'reconnaître/admettre'}]},
+  {k:'疑',on:'ギ',kun:'うたが',mean:'Douter/Soupçonner',lvl:'n2',ex:[{w:'うたがう',r:'utagau',t:'douter'}]},
+  {k:'抱',on:'ホウ',kun:'だ',mean:'Tenir/Embrasser',lvl:'n2',ex:[{w:'だく',r:'daku',t:'tenir dans les bras'}]},
 ];
  
-// GRAMMAR — 15 structures N5→N3
+// GRAMMAR — 20 structures N5→N2
 const GRAMMAR=[
   {lvl:'n5',title:'① X は Y です — Affirmation',pat:'[Sujet] は [Attribut] です',ex:[{jp:'わたし は がくせい です。',fr:'Je suis étudiant(e).'},{jp:'これ は ほん です。',fr:'C\'est un livre.'}]},
-  {lvl:'n5',title:'② X は Y じゃないです — Négation',pat:'[Sujet] は [Attribut] じゃないです',ex:[{jp:'これ は ほん じゃないです。',fr:'Ce n\'est pas un livre.'}]},
-  {lvl:'n5',title:'③ Verbe + ます — Présent poli',pat:'[Sujet] は [Objet] を [Verbe]ます',ex:[{jp:'わたし は りんご を たべます。',fr:'Je mange une pomme.'},{jp:'かれ は にほんご を べんきょうします。',fr:'Il étudie le japonais.'}]},
-  {lvl:'n5',title:'④ Verbe + ません — Négatif poli',pat:'[Verbe]ません',ex:[{jp:'わたし は にく を たべません。',fr:'Je ne mange pas de viande.'}]},
-  {lvl:'n5',title:'⑤ Question — か',pat:'[Phrase] + か？',ex:[{jp:'これ は なん ですか？',fr:'Qu\'est-ce que c\'est ?'},{jp:'にほんじん ですか？',fr:'Êtes-vous japonais(e) ?'}]},
-  {lvl:'n5',title:'⑥ います / あります — Existence',pat:'[Lieu] に [Chose] が あります / います',ex:[{jp:'へや に ねこ が います。',fr:'Il y a un chat dans la chambre.'},{jp:'つくえ に ほん が あります。',fr:'Il y a un livre sur le bureau.'}]},
-  {lvl:'n5',title:'⑦ Passé poli — ました / ませんでした',pat:'[Verbe]ました / ませんでした',ex:[{jp:'きのう えいが を みました。',fr:'Hier j\'ai regardé un film.'},{jp:'べんきょう しませんでした。',fr:'Je n\'ai pas étudié.'}]},
-  {lvl:'n4',title:'⑧ て形 — Forme en te (enchaînement)',pat:'[Verbe]て、[Verbe]',ex:[{jp:'おきて、はみがきします。',fr:'Je me lève et me brosse les dents.'},{jp:'たべて、ねます。',fr:'Je mange et je dors.'}]},
-  {lvl:'n4',title:'⑨〜たい — Vouloir faire',pat:'[Verbe (stem)]たい',ex:[{jp:'にほんに いきたい。',fr:'Je veux aller au Japon.'},{jp:'すし を たべたい。',fr:'Je veux manger des sushis.'}]},
-  {lvl:'n4',title:'⑩〜ている — Action en cours / état',pat:'[Verbe]ている',ex:[{jp:'いま べんきょう しています。',fr:'Je suis en train d\'étudier.'},{jp:'かれ は けっこん しています。',fr:'Il est marié.'}]},
-  {lvl:'n4',title:'⑪〜から — Parce que / Depuis',pat:'[Phrase] から [Résultat]',ex:[{jp:'あめ だから、いえ に います。',fr:'Parce qu\'il pleut, je suis à la maison.'},{jp:'とうきょう から きました。',fr:'Je viens de Tokyo.'}]},
-  {lvl:'n4',title:'⑫〜ので — Parce que (formel)',pat:'[Phrase (plain)] ので [Résultat]',ex:[{jp:'つかれた ので、ねます。',fr:'Parce que je suis fatigué, je vais dormir.'}]},
-  {lvl:'n4',title:'⑬〜なければならない — Devoir',pat:'[Verbe (neg stem)]なければならない',ex:[{jp:'べんきょう しなければならない。',fr:'Je dois étudier.'},{jp:'はやく おきなければならない。',fr:'Je dois me lever tôt.'}]},
-  {lvl:'n3',title:'⑭〜ようにする — Essayer de / Faire en sorte',pat:'[Verbe (dict)]ようにする',ex:[{jp:'まいにち うんどう する ようにしています。',fr:'Je fais en sorte de faire du sport chaque jour.'}]},
-  {lvl:'n3',title:'⑮〜てしまう — Finir par / Regret',pat:'[Verbe]てしまう',ex:[{jp:'ケーキ を ぜんぶ たべてしまった。',fr:'J\'ai fini par manger tout le gâteau.'},{jp:'わすれてしまいました。',fr:'J\'ai fini par oublier.'}]},
+  {lvl:'n5',title:'② Verbe + ます/ません — Présent poli',pat:'[Verbe]ます / [Verbe]ません',ex:[{jp:'まいにち べんきょう します。',fr:'J\'étudie chaque jour.'},{jp:'さかな を たべません。',fr:'Je ne mange pas de poisson.'}]},
+  {lvl:'n5',title:'③ ました/ませんでした — Passé poli',pat:'[Verbe]ました / ませんでした',ex:[{jp:'きのう えいが を みました。',fr:'Hier j\'ai regardé un film.'}]},
+  {lvl:'n5',title:'④ います/あります — Existence',pat:'[Lieu] に [Chose] が あります/います',ex:[{jp:'へや に ねこ が います。',fr:'Il y a un chat dans la chambre.'}]},
+  {lvl:'n4',title:'⑤ て形 — Enchaînement d\'actions',pat:'[Verbe]て、[Verbe]',ex:[{jp:'おきて、シャワー を あびます。',fr:'Je me lève et je prends une douche.'}]},
+  {lvl:'n4',title:'⑥〜たい — Vouloir faire',pat:'[Verbe (stem)]たい',ex:[{jp:'にほんに いきたい。',fr:'Je veux aller au Japon.'},{jp:'もっと しりたい。',fr:'Je veux en savoir plus.'}]},
+  {lvl:'n4',title:'⑦〜ている — Action en cours / état',pat:'[Verbe]ている',ex:[{jp:'いま べんきょう しています。',fr:'Je suis en train d\'étudier.'},{jp:'かれ は けっこん しています。',fr:'Il est marié.'}]},
+  {lvl:'n4',title:'⑧〜から / ので — Cause',pat:'[Cause]から/ので、[Résultat]',ex:[{jp:'あめ だから、いえ に います。',fr:'Parce qu\'il pleut, je reste à la maison.'},{jp:'つかれた ので、ねます。',fr:'Étant fatigué, je vais dormir.'}]},
+  {lvl:'n4',title:'⑨〜なければならない — Obligation',pat:'[Verbe (neg stem)]なければならない',ex:[{jp:'はやく おきなければならない。',fr:'Je dois me lever tôt.'}]},
+  {lvl:'n4',title:'⑩〜てしまう — Finir par / Regret',pat:'[Verbe]てしまう',ex:[{jp:'ケーキ を ぜんぶ たべてしまった。',fr:'J\'ai fini par tout manger.'},{jp:'わすれてしまいました。',fr:'J\'ai malheureusement oublié.'}]},
+  {lvl:'n3',title:'⑪〜ようにする — Faire en sorte de',pat:'[Verbe (dict)]ようにする',ex:[{jp:'まいにち うんどう する ようにしています。',fr:'Je fais en sorte de faire du sport chaque jour.'}]},
+  {lvl:'n3',title:'⑫〜らしい — Il paraît que / Semble',pat:'[Phrase (plain)]らしい',ex:[{jp:'かれ は かいしゃ を やめた らしい。',fr:'Il paraît qu\'il a quitté son entreprise.'}]},
+  {lvl:'n3',title:'⑬〜わけだ — C\'est la raison pour laquelle',pat:'[Phrase (plain)]わけだ',ex:[{jp:'ずっと べんきょう した わけだ、ごうかく した。',fr:'J\'ai étudié longtemps, c\'est pourquoi j\'ai réussi.'}]},
+  {lvl:'n3',title:'⑭〜さえ〜ば — Si seulement',pat:'[Nom/Verbe]さえ〜ば',ex:[{jp:'おかね さえ あれば、なんでも できる。',fr:'Si seulement j\'avais de l\'argent, je pourrais tout faire.'}]},
+  {lvl:'n3',title:'⑮〜に対して — Envers / Par rapport à',pat:'[Nom]に対して',ex:[{jp:'かれ は わたし に対して やさしい。',fr:'Il est gentil envers moi.'}]},
+  {lvl:'n2',title:'⑯〜にもかかわらず — Malgré',pat:'[Nom/Phrase]にもかかわらず',ex:[{jp:'つかれて いる にもかかわらず、べんきょう した。',fr:'Malgré la fatigue, j\'ai étudié.'}]},
+  {lvl:'n2',title:'⑰〜とともに — En même temps que / Avec',pat:'[Nom/Verbe]とともに',ex:[{jp:'じだい とともに、ぶんか も かわる。',fr:'La culture change avec le temps.'}]},
+  {lvl:'n2',title:'⑱〜ざるを得ない — Ne pas pouvoir s\'empêcher de',pat:'[Verbe (neg stem)]ざるを得ない',ex:[{jp:'みとめ ざるを得ない。',fr:'Je ne peux pas m\'empêcher de l\'admettre.'}]},
+  {lvl:'n2',title:'⑲〜に他ならない — N\'est rien d\'autre que',pat:'[Nom/Phrase]に他ならない',ex:[{jp:'それ は あいじょう に他ならない。',fr:'Ce n\'est rien d\'autre que de l\'amour.'}]},
+  {lvl:'n2',title:'⑳〜かねない — Risque de / Pourrait bien',pat:'[Verbe (stem)]かねない',ex:[{jp:'このまま では しっぱい しかねない。',fr:'Comme ça, on risque d\'échouer.'}]},
 ];
  
 const WPAIRS=[
@@ -633,13 +656,13 @@ const LPHR=[
   {s:'わたし の なまえ は _____ です',a:'loic',h:'ロイック',t:'Ton prénom en katakana'},
 ];
 const HPHR=[
-  {s:'きのう えいが を _____ (hier j\'ai regardé un film)',a:'mimashita',h:'みました',t:'Passé poli de みる'},
-  {s:'にほんご を _____ か (parlez-vous japonais ?)',a:'hanashimasu',h:'はなします',t:'"hanashimasu" = parler'},
-  {s:'もっと はやく おきる _____ (je dois me lever plus tôt)',a:'youni shiteiru',h:'ようにしている',t:'⑭ ようにする = faire en sorte'},
-  {s:'つかれた _____ ねます (parce que je suis fatiguée, je dors)',a:'node',h:'ので',t:'⑫ ので = parce que (formel)'},
-  {s:'ケーキ を ぜんぶ たべ_____ (j\'ai fini par tout manger)',a:'teshimatta',h:'てしまった',t:'⑮ てしまう = finir par'},
-  {s:'にほんに いき_____ (je veux aller au Japon)',a:'tai',h:'たい',t:'⑨ たい = vouloir faire'},
-  {s:'いま べんきょう し_____ (je suis en train d\'étudier)',a:'teiru',h:'ている',t:'⑩ ている = action en cours'},
+  {s:'ケーキ を ぜんぶ たべ_____ (j\'ai fini par tout manger)',a:'teshimatta',h:'てしまった',t:'⑩ てしまう = finir par / regret'},
+  {s:'つかれて いる _____ べんきょう した (malgré la fatigue, j\'ai étudié)',a:'nimokakawarazu',h:'にもかかわらず',t:'⑯ にもかかわらず = malgré'},
+  {s:'このまま では しっぱい し_____ (comme ça, on risque d\'échouer)',a:'kanenai',h:'かねない',t:'⑳ かねない = risque de'},
+  {s:'それ は あいじょう _____ (ce n\'est rien d\'autre que de l\'amour)',a:'ni hoka naranai',h:'に他ならない',t:'⑲ に他ならない = n\'est rien d\'autre que'},
+  {s:'おかね さえ _____ なんでも できる (si j\'avais de l\'argent...)',a:'areba',h:'あれば',t:'⑭ さえ〜ば = si seulement'},
+  {s:'みとめ _____ (je ne peux pas m\'empêcher d\'admettre)',a:'zaruwoenai',h:'ざるを得ない',t:'⑱ ざるを得ない = ne pas pouvoir s\'empêcher'},
+  {s:'じだい _____ ぶんか も かわる (la culture change avec le temps)',a:'totomoni',h:'とともに',t:'⑰ とともに = en même temps que'},
 ];
  
 // STATE
@@ -1067,7 +1090,7 @@ function startApp(user){
   if(lp)lp.style.display=user==='loic'?'':'none';
   if(hp)hp.style.display=user==='helena'?'':'none';
   const pill=el('tpill');
-  if(pill){pill.className='upill '+(user==='loic'?'lcp':'hlp');pill.textContent=user==='loic'?'Loïc — Débutant':'Helena — N4→N3';}
+  if(pill){pill.className='upill '+(user==='loic'?'lcp':'hlp');pill.textContent=user==='loic'?'Loïc — Débutant':'Helena — N3→N2';}
   buildTabs(user==='loic'?LTABS:HTABS, user==='loic'?'lct':'hlt');
   const firstId=user==='loic'?'l-srs':'h-srs';const fp=el(firstId);if(fp)fp.classList.add('active');
   refreshTop();refreshProg();
