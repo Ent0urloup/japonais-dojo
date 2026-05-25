@@ -162,13 +162,13 @@ body{background:var(--bg);color:var(--tx);font-family:var(--ui);min-height:100vh
   <div class="prow">
     <div class="pcard lc" onclick="startApp('loic')">
       <span class="pkanji">始</span>
-      <div class="pname">Loïc</div><div class="plvl">Débutant</div>
+      <div class="pname">Loïc</div><div class="plvl">Niveau Débutant</div>
       <div class="pbadge">🌱 Semaine 1</div><br>
       <div class="pstreak">🔥 <b id="lks">0</b> j &nbsp;·&nbsp; ⭐ <b id="lxs">0</b> XP</div>
     </div>
     <div class="pcard hl" onclick="startApp('helena')">
       <span class="pkanji">進</span>
-      <div class="pname">Helena</div><div class="plvl">Intermédiaire</div>
+      <div class="pname">Helena</div><div class="plvl">Niveau Intermédiaire</div>
       <div class="pbadge">⚡ Niveau N4</div><br>
       <div class="pstreak">🔥 <b id="hks">0</b> j &nbsp;·&nbsp; ⭐ <b id="hxs">0</b> XP</div>
     </div>
@@ -385,7 +385,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--ui);min-height:100vh
       </div>
       <div class="card"><div class="clbl">Complète la phrase</div>
         <div id="hphr"></div>
-        <div style="display:flex;gap:8px;margin-top:6px"><button class="btn hl" onclick="checkHP()">Vérifier ✓</button><button class="btn ghost" onclick="buildHP()">Réinitialiser</button></div>
+        <div style="display:flex;gap:8px;margin-top:6px"><button class="btn ghost" onclick="buildHP()">↺ Réinitialiser</button></div>
         <div class="fb" id="hpfb" style="margin-top:12px"></div>
       </div>
     </div>
@@ -400,6 +400,12 @@ body{background:var(--bg);color:var(--tx);font-family:var(--ui);min-height:100vh
       </div>
     </div>
 
+    <div class="panel" id="h-romantic">
+      <div class="stitle"><span class="acc hl">❤️</span> Phrases romantiques</div>
+      <div class="sdesc">Ce que Loïc pourrait te dire — et ce que tu peux lui répondre 😄</div>
+      <div class="card"><div class="clbl">Phrases</div><div id="h-romantic-list"></div></div>
+      <div class="card"><div class="clbl">Quiz</div><div id="h-romantic-quiz"></div></div>
+    </div>
     <div class="panel" id="h-prog">
       <div class="stitle"><span class="acc hl">進</span> Progression</div>
       <div class="card"><div class="clbl">Série — 28 jours</div><div class="sgrid" id="hsg"></div>
@@ -826,16 +832,21 @@ function ansG(btn,chosen,correct,fbId,user){
 
 // ROMANTIC
 function buildRomantic(){
-  const c=el('romantic-list');if(!c)return;
-  c.innerHTML=ROMANTIC.map(r=>`
+  // fill both loic and helena panels
+  ['romantic-list','h-romantic-list'].forEach(id=>{
+    const c=el(id);if(!c)return;
+    c.innerHTML=ROMANTIC.map(r=>`
     <div class="romantic-card">
       <div class="romantic-jp">${r.jp} <button class="speak-btn" onclick="speak('${r.jp}')">🔊</button></div>
       <div class="romantic-ro">${r.ro}</div>
       <div class="romantic-fr">${r.fr}</div>
       ${r.note?`<div style="font-size:.7rem;color:var(--mu);margin-top:4px">💡 ${r.note}</div>`:''}
     </div>`).join('');
-  buildRomanticQuiz();
+  });
+  buildRomanticQuiz();buildHRomanticQuiz();
 }
+function buildRomantic_orig(){
+  const c=el('romantic-list');if(!c)return;
 function buildRomanticQuiz(){
   const q=ROMANTIC[Math.floor(Math.random()*ROMANTIC.length)];
   const wrongs=ROMANTIC.filter(r=>r.jp!==q.jp).sort(()=>Math.random()-.5).slice(0,3);
@@ -849,6 +860,17 @@ function buildRomanticQuiz(){
 }
 
 // WORD READ
+function buildHRomanticQuiz(){
+  const q=ROMANTIC[Math.floor(Math.random()*ROMANTIC.length)];
+  const wrongs=ROMANTIC.filter(r=>r.jp!==q.jp).sort(()=>Math.random()-.5).slice(0,3);
+  const opts=[q,...wrongs].sort(()=>Math.random()-.5);
+  const c=el('h-romantic-quiz');if(!c)return;
+  c.innerHTML=`<div style="font-size:.7rem;color:var(--mu);margin-bottom:10px;letter-spacing:.1em">QUE SIGNIFIE CETTE PHRASE ?</div>
+    <div class="romantic-jp" style="margin-bottom:14px">${q.jp} <button class="speak-btn" onclick="speak('${q.jp}')">🔊</button></div>
+    <div class="choices">${opts.map((o,i)=>`<button class="choice" onclick="ansG(this,'${o.fr}','${q.fr}','hrqfb','helena')"><span class="cltr">${'ABCD'[i]}</span>${o.fr}</button>`).join('')}</div>
+    <div class="fb" id="hrqfb"></div>
+    <div class="nrow"><button class="btn ghost" style="margin-top:10px" onclick="buildHRomanticQuiz()">Autre →</button></div>`;
+}
 function buildWR(){
   const pick=LWORDS.sort(()=>Math.random()-.5).slice(0,5);
   el('wrc').innerHTML=pick.map((w,i)=>`
@@ -880,39 +902,39 @@ function buildLP(){
   el('lphr').innerHTML=LPHR.map((p,i)=>`
     <div class="card" style="margin-bottom:14px;border-left:2px solid var(--lc)">
       <div class="clbl">Phrase ${i+1}</div><div style="margin-bottom:10px">${p.s}</div>
-      <div class="inrow"><input class="jinp lf" id="lp${i}" placeholder="romanisation..." autocomplete="off">
-      <button class="btn ghost" onclick="hint('lpf${i}','${p.h}')">Indice</button></div>
+      <div class="inrow"><input class="jinp lf" id="lp${i}" placeholder="romanisation..." autocomplete="off" onkeydown="if(event.key==='Enter')checkLP1(${i})">
+      <button class="btn ghost" onclick="hint('lpf${i}','${p.h}')">Indice</button>
+      <button class="btn lc sm" onclick="checkLP1(${i})">✓</button></div>
       <div class="fb" id="lpf${i}"></div></div>`).join('');
   el('lpfb').className='fb';
 }
+function checkLP1(i){
+  const p=LPHR[i];const v=(el('lp'+i)?.value||'').trim().toLowerCase();
+  const inp=el('lp'+i);const fb=el('lpf'+i);
+  if(v===p.a){inp.classList.add('correct');inp.classList.remove('wrong');fb.className='fb ok show';fb.textContent='✓ '+p.t;addXP('loic',10);}
+  else{inp.classList.add('wrong');inp.classList.remove('correct');fb.className='fb ko show';fb.textContent='✗ Réponse : '+p.a+' — '+p.t;}
+}
 function checkLP(){
-  let ok=0;LPHR.forEach((p,i)=>{
-    const v=(el('lp'+i)?.value||'').trim().toLowerCase();const inp=el('lp'+i);const fb=el('lpf'+i);
-    if(v===p.a){ok++;inp.classList.add('correct');inp.classList.remove('wrong');fb.className='fb ok show';fb.textContent='✓ '+p.t;addXP('loic',10);}
-    else{inp.classList.add('wrong');inp.classList.remove('correct');fb.className='fb ko show';fb.textContent='✗ Réponse : '+p.a+' — '+p.t;}
-  });
-  const gfb=el('lpfb');gfb.className=`fb ${ok===LPHR.length?'ok':'ko'} show`;
-  gfb.textContent=`${ok}/${LPHR.length} — ${ok===LPHR.length?'Parfait ! +50 XP 🎉':'Réessaie.'}`;
-  if(ok===LPHR.length)addXP('loic',50);
+  LPHR.forEach((_,i)=>checkLP1(i));
 }
 function buildHP(){
   el('hphr').innerHTML=HPHR.map((p,i)=>`
     <div class="card" style="margin-bottom:14px;border-left:2px solid var(--hl)">
       <div class="clbl">Phrase ${i+1}</div><div style="margin-bottom:10px">${p.s}</div>
-      <div class="inrow"><input class="jinp hf" id="hp${i}" placeholder="romanisation..." autocomplete="off">
-      <button class="btn ghost" onclick="hint('hpf${i}','${p.h}')">Indice</button></div>
+      <div class="inrow"><input class="jinp hf" id="hp${i}" placeholder="romanisation..." autocomplete="off" onkeydown="if(event.key==='Enter')checkHP1(${i})">
+      <button class="btn ghost" onclick="hint('hpf${i}','${p.h}')">Indice</button>
+      <button class="btn hl sm" onclick="checkHP1(${i})">✓</button></div>
       <div class="fb" id="hpf${i}"></div></div>`).join('');
   el('hpfb').className='fb';
 }
+function checkHP1(i){
+  const p=HPHR[i];const v=(el('hp'+i)?.value||'').trim().toLowerCase();
+  const inp=el('hp'+i);const fb=el('hpf'+i);
+  if(v===p.a){inp.classList.add('correct');inp.classList.remove('wrong');fb.className='fb ok show';fb.textContent='✓ '+p.t;addXP('helena',10);}
+  else{inp.classList.add('wrong');inp.classList.remove('correct');fb.className='fb ko show';fb.textContent='✗ Réponse : '+p.a+' — '+p.t;}
+}
 function checkHP(){
-  let ok=0;HPHR.forEach((p,i)=>{
-    const v=(el('hp'+i)?.value||'').trim().toLowerCase();const inp=el('hp'+i);const fb=el('hpf'+i);
-    if(v===p.a){ok++;inp.classList.add('correct');inp.classList.remove('wrong');fb.className='fb ok show';fb.textContent='✓ '+p.t;addXP('helena',10);}
-    else{inp.classList.add('wrong');inp.classList.remove('correct');fb.className='fb ko show';fb.textContent='✗ Réponse : '+p.a+' — '+p.t;}
-  });
-  const gfb=el('hpfb');gfb.className=`fb ${ok===HPHR.length?'ok':'ko'} show`;
-  gfb.textContent=`${ok}/${HPHR.length} — ${ok===HPHR.length?'Excellent ! +50 XP 🎉':'Relis les structures.'}`;
-  if(ok===HPHR.length)addXP('helena',50);
+  HPHR.forEach((_,i)=>checkHP1(i));
 }
 function hint(fbId,h){el(fbId).className='fb info show';el(fbId).textContent='Indice : '+h;}
 
@@ -973,7 +995,7 @@ function refreshProg(){
 
 // NAV
 const LTABS=[{id:'l-srs',ic:'復',lb:'SRS'},{id:'l-hira',ic:'あ',lb:'Hiragana'},{id:'l-kata',ic:'ア',lb:'Katakana'},{id:'l-romantic',ic:'❤️',lb:'Pour Helena'},{id:'l-vocab',ic:'語',lb:'Lecture'},{id:'l-prog',ic:'📊',lb:'Progrès'}];
-const HTABS=[{id:'h-srs',ic:'復',lb:'SRS'},{id:'h-kanji',ic:'漢',lb:'Kanji'},{id:'h-grammar',ic:'文法',lb:'Grammaire'},{id:'h-match',ic:'合',lb:'Association'},{id:'h-prog',ic:'📊',lb:'Progrès'}];
+const HTABS=[{id:'h-srs',ic:'復',lb:'SRS'},{id:'h-kanji',ic:'漢',lb:'Kanji'},{id:'h-grammar',ic:'文法',lb:'Grammaire'},{id:'h-match',ic:'合',lb:'Association'},{id:'h-romantic',ic:'❤️',lb:'Phrases ❤️'},{id:'h-prog',ic:'📊',lb:'Progrès'}];
 function buildTabs(tabs,cls){
   const bar=el('tabbar');bar.innerHTML='';
   tabs.forEach((t,i)=>{
