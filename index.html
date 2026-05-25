@@ -575,7 +575,7 @@ function renderSRS(){
   const q=SQ[SI];
   set('schar',q.jp);
   const m=MNEM[q.jp];
-  if(m){el('smnem').className='mcard show';el('smtext').innerHTML=m;}else el('smnem').className='mcard';
+  if(m){el('smnem').className='mcard';el('smtext').innerHTML=m;}else el('smnem').className='mcard'; // hidden until answer
   const pool=H.filter(h=>h.ro&&h.jp&&h.ro!==q.ro);
   const opts=[q,...pool.sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
   el('schoices').innerHTML=opts.map((o,i)=>`<button class="choice" onclick="ansSRS(this,'${o.ro}','${q.ro}','${q.jp}')"><span class="cltr">${'ABCD'[i]}</span>${o.ro}</button>`).join('');
@@ -584,7 +584,7 @@ function renderSRS(){
 function ansSRS(btn,chosen,correct,jp){
   btn.parentElement.querySelectorAll('.choice').forEach(b=>b.onclick=null);
   const ok=chosen===correct;
-  if(ok){btn.classList.add('correct');SOK++;el('sfb').className='fb ok show';el('sfb').innerHTML='✓ Correct ! Prochain : '+ivLabel(jp,true,'loic')+' &nbsp;<button class="speak-btn" onclick="speak(\''+jp+'\')" style="font-size:.7rem">🔊</button>';speak(jp);addXP('loic',10);}
+  if(ok){btn.classList.add('correct');SOK++;el('sfb').className='fb ok show';el('sfb').innerHTML='✓ Correct ! Prochain : '+ivLabel(jp,true,'loic')+' &nbsp;<button class="speak-btn" onclick="speak(\''+jp+'\')" style="font-size:.7rem">🔊</button>';speak(jp);addXP('loic',10);el('smnem').className='mcard show';}
   else{btn.classList.add('wrong');el('sfb').className='fb ko show';el('sfb').innerHTML='✗ C\'était : <b>'+correct+'</b> — Reviendra dans 1 jour.';btn.parentElement.querySelectorAll('.choice').forEach(b=>{if(b.textContent.includes(correct))b.classList.add('correct');});}
   reviewCard(jp,ok,'loic');el('snx').disabled=false;updStat();
 }
@@ -613,7 +613,7 @@ function renderHSRS(){
   const q=HSQ[HSI];
   set('hschar',q.jp);
   const m=KMNEM[q.jp];
-  if(m){el('hsmnem').className='mcard show';el('hsmtext').innerHTML=m;}else el('hsmnem').className='mcard';
+  if(m){el('hsmnem').className='mcard';el('hsmtext').innerHTML=m;}else el('hsmnem').className='mcard'; // hidden until answer
   const pool=K.filter(k=>k.ro&&k.jp&&k.ro!==q.ro);
   const opts=[q,...pool.sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
   el('hschoices').innerHTML=opts.map((o,i)=>`<button class="choice" onclick="ansHSRS(this,'${o.ro}','${q.ro}','${q.jp}')"><span class="cltr">${'ABCD'[i]}</span>${o.ro}</button>`).join('');
@@ -622,7 +622,7 @@ function renderHSRS(){
 function ansHSRS(btn,chosen,correct,jp){
   btn.parentElement.querySelectorAll('.choice').forEach(b=>b.onclick=null);
   const ok=chosen===correct;
-  if(ok){btn.classList.add('correct');HSOK++;el('hsfb').className='fb ok show';el('hsfb').innerHTML='✓ Correct ! Prochain : '+ivLabel(jp,true,'helena')+' &nbsp;<button class="speak-btn" onclick="speak(\''+jp+'\')" style="font-size:.7rem">🔊</button>';speak(jp);addXP('helena',10);}
+  if(ok){btn.classList.add('correct');HSOK++;el('hsfb').className='fb ok show';el('hsfb').innerHTML='✓ Correct ! Prochain : '+ivLabel(jp,true,'helena')+' &nbsp;<button class="speak-btn" onclick="speak(\''+jp+'\')" style="font-size:.7rem">🔊</button>';speak(jp);addXP('helena',10);el('hsmnem').className='mcard show';}
   else{btn.classList.add('wrong');el('hsfb').className='fb ko show';el('hsfb').innerHTML='✗ C\'était : <b>'+correct+'</b>';btn.parentElement.querySelectorAll('.choice').forEach(b=>{if(b.textContent.includes(correct))b.classList.add('correct');});}
   reviewCard(jp,ok,'helena');el('hsnx').disabled=false;
   const s=stats(K,ST.helena.srs);set('hsn',s.nw);set('hsd',s.due);set('hso',s.ok);
