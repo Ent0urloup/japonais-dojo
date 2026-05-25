@@ -845,8 +845,6 @@ function buildRomantic(){
   });
   buildRomanticQuiz();buildHRomanticQuiz();
 }
-function buildRomantic_orig(){
-  const c=el('romantic-list');if(!c)return;
 function buildRomanticQuiz(){
   const q=ROMANTIC[Math.floor(Math.random()*ROMANTIC.length)];
   const wrongs=ROMANTIC.filter(r=>r.jp!==q.jp).sort(()=>Math.random()-.5).slice(0,3);
@@ -1025,7 +1023,7 @@ function speak(text){
   const v=window.speechSynthesis.getVoices().find(v=>v.lang.startsWith('ja'));if(v)u.voice=v;
   window.speechSynthesis.speak(u);
 }
-window.speechSynthesis.onvoiceschanged=()=>{};
+if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=()=>{};
 function el(id){return document.getElementById(id);}
 function set(id,v){const e=el(id);if(e)e.textContent=v;}
 
